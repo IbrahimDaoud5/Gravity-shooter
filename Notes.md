@@ -8,3 +8,5 @@ First of all, we need to navigate to the file/s path in git bash terminal, <br>
 Then we write:<br> `$git lfs track "*.fileextension"` <br> (if we want all files from this type, or singlefiles)
 <br><br> then if we write git status it will show us the tracked files, we can see .gitattributes that tells git which big files to track
 <br>__Important:__ here is a video that provide us with a file that has all the big files that we will need listed in one place - https://www.youtube.com/watch?v=_ewoEQFEURg
+<br> Here is the gitattribute file: I saved it in -->
+C:\Users\boroa\OneDrive\Documents
