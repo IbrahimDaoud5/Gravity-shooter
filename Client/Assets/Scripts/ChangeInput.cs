@@ -7,16 +7,8 @@ public class ChangeInput : MonoBehaviour
 {
     EventSystem system;
     public Selectable firstInput;
-    public Button LoginBtn, RegisterBtn;
-    //public GameObject loginCanvas, registerCanvas;
-
-    //public void ShowRegisterScreen()
-    //{
-    //    loginCanvas.SetActive(false);
-    //    registerCanvas.SetActive(true);
 
 
-    //}
 
     // Start is called before the first frame update
     void Start()
@@ -55,8 +47,7 @@ public class ChangeInput : MonoBehaviour
         }
 
 
-        // RegisterBtn.onClick(ShowRegisterScreen());
-        //RegisterBtn.onClick.
+
 
     }
 }

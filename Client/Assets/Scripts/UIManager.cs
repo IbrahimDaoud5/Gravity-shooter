@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject LoginCanvas;
-    public GameObject RegisterCanvas;
+
+    public GameObject LoginPanel, RegisterPanel;
+
 
     public void ShowRegisterCanvas()
     {
-        LoginCanvas.SetActive(false);
-        RegisterCanvas.SetActive(true);
+        LoginPanel.SetActive(false);
+        RegisterPanel.SetActive(true);
+
+
+        if (RegisterPanel.activeSelf && !LoginPanel.activeSelf)
+            Debug.Log(" \n\n### Transitioning to register screen ### ");
     }
 
 }
