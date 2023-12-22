@@ -2083,6 +2083,7 @@ GameObject:
   - component: {fileID: 792375981}
   - component: {fileID: 792375983}
   - component: {fileID: 792375982}
+  - component: {fileID: 792375985}
   - component: {fileID: 792375984}
   m_Layer: 5
   m_Name: LoginPanel
@@ -2166,8 +2167,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firstInput: {fileID: 1222815440}
-  LoginBtn: {fileID: 1621980832}
-  RegisterBtn: {fileID: 906836156}
+--- !u!114 &792375985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792375980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24cca17b06110c546a0ee28af96a30d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  usernameInputField: {fileID: 1222815440}
+  passwordInputField: {fileID: 200855942}
+  b: {fileID: 0}
 --- !u!1 &818881215
 GameObject:
   m_ObjectHideFlags: 0
@@ -3757,7 +3771,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1621980833}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 792375985}
+        m_TargetAssemblyTypeName: Login, Assembly-CSharp
+        m_MethodName: CallLogin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1621980833
 MonoBehaviour:
   m_ObjectHideFlags: 0
