@@ -30,6 +30,7 @@ public class Login : MonoBehaviour
 
         using (UnityWebRequest www = new UnityWebRequest(GlobalConfig.ServerUrl + "/login", "POST"))
         {
+            www.certificateHandler = new AcceptAllCertificates(); // TEMPORARY - until we use CA
             www.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
             www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
             www.SetRequestHeader("Content-Type", "application/json");
