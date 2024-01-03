@@ -44,6 +44,7 @@ public class Login : MonoBehaviour
             {
                 Debug.Log(www.downloadHandler.text);
                 // Handle successful login
+                // Maybe insert to LoggedIn List
                 // ------------> GO TO THE GAME
             }
         }

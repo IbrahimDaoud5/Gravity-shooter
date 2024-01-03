@@ -2,6 +2,6 @@
 
 public static class GlobalConfig
 {
-    public static readonly string ServerUrl = "http://127.0.0.1:8081";
+    public static readonly string ServerUrl = "https://13.53.132.172:8081";
 }
 
