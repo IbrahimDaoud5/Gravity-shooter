@@ -72,3 +72,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 Server/.idea/codeStyles/codeStyleConfig.xml
 Server/.idea/codeStyles/Project.xml
+*.class

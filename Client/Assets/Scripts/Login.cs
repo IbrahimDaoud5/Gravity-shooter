@@ -37,6 +37,20 @@ public class Login : MonoBehaviour
 
             yield return www.SendWebRequest();
 
+            // Handle different cases of request result
+            switch (www.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError("Error: " + www.error);
+                    // Handle connection and data processing errors (e.g., display a message to the user)
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError("HTTP Error: " + www.error);
+                    // Handle HTTP protocol errors (e.g., HTTP response code indicates an error)
+                    break;
+            }
+
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
