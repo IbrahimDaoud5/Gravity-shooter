@@ -13,10 +13,9 @@ public class LoginService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
+    //try
     public String login(String username, String password) {
         String sql = "SELECT count(*) FROM users WHERE username = ? AND password = ?";
-       // Integer count = jdbcTemplate.queryForObject(sql, Integer.class, new Object[]{username, password});
         Integer count = jdbcTemplate.queryForObject(
                 sql,
                 new Object[]{username, password},

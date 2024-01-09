@@ -50,4 +50,7 @@
     <orderEntry type="library" name="Maven: com.mysql:mysql-connector-j:8.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.21.9" level="project" />
   </component>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="73106cb6-94ef-44e4-be34-87a8d11d28c9" />
+  </component>
 </module>
