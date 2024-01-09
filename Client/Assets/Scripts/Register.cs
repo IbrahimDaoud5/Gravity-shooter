@@ -4,12 +4,17 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+
 public class Register : MonoBehaviour
 {
     public TMP_InputField usernameInputField, passwordInputField, confirmPasswordInputField;
+    public Text label;
     public Button createButton;
 
-    void Start() { }
+    void Start()
+    {
+
+    }
     void Update() { }
 
     public void CallRegister()
@@ -17,16 +22,22 @@ public class Register : MonoBehaviour
         string username = usernameInputField.text;
         string password = passwordInputField.text;
         string confirmPassword = confirmPasswordInputField.text;
+        label.text = "";
+        label.color = Color.red;
 
-        if (password == confirmPassword)
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
         {
-            StartCoroutine(RegisterCoroutine(username, password));
+            Debug.Log("Required INFO MISSING !");
+            label.text = "Please fill in the required INFO";//SHOW IN LABEL
         }
-        else
+        else if (password != confirmPassword)
         {
-            Debug.Log("Password and confirm password do not match.");
-            // You might want to show this message to the user in the UI.
+            string msg = "Passwords do NOT match!";
+            Debug.Log(msg);
+            label.text = msg;//SHOW IN LABEL
+
         }
+        else StartCoroutine(RegisterCoroutine(username, password));
     }
 
     IEnumerator RegisterCoroutine(string username, string password)
@@ -45,15 +56,22 @@ public class Register : MonoBehaviour
 
             yield return www.SendWebRequest();
 
-            if (www.result != UnityWebRequest.Result.Success)
+            if (www.result != UnityWebRequest.Result.Success) // If the connection is not successful
             {
                 Debug.Log(www.error);
             }
             else
             {
                 Debug.Log(www.downloadHandler.text);
-                // Handle successful registration
-                // Maybe add a confirmation message or redirect to login
+                if (www.downloadHandler.text != "Registration successful")
+                    label.text = www.downloadHandler.text;//SHOW IN LABEL
+
+                else  // ---> Registration successful
+                {
+                    string s = "You've successfully signed up, Please Log in";
+                    label.color = Color.green;
+                    label.text = s;//SHOW IN LABEL
+                }
             }
         }
     }

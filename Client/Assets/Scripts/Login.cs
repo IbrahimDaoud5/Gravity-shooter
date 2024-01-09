@@ -7,16 +7,23 @@ using UnityEngine.UI;
 public class Login : MonoBehaviour
 {
     public TMP_InputField usernameInputField, passwordInputField;
-    public Button b;
+    public Text label;
+    //public Button b;
 
-    void Start() { }
+    void Start()
+    {
+        usernameInputField.onValueChanged.AddListener(delegate { HideErrorMessage(); });
+        passwordInputField.onValueChanged.AddListener(delegate { HideErrorMessage(); });
+    }
     void Update() { }
 
     public void CallLogin()
     {
         string username = usernameInputField.text; // Access text from InputField
         string password = passwordInputField.text; // Access text from InputField
-        StartCoroutine(LoginCoroutine(username, password));
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            label.text = "Please fill in the required INFO";//SHOW IN LABEL
+        else StartCoroutine(LoginCoroutine(username, password));
     }
 
     IEnumerator LoginCoroutine(string username, string password)
@@ -51,18 +58,32 @@ public class Login : MonoBehaviour
                     break;
             }
 
-            if (www.result != UnityWebRequest.Result.Success)
+            if (www.result != UnityWebRequest.Result.Success) // If the connection is not successful
             {
+
+                //label.enabled = true;
                 Debug.Log(www.error);
             }
             else
             {
                 Debug.Log(www.downloadHandler.text);
-                // Handle successful login
-                // Maybe insert to LoggedIn List
-                // ------------> GO TO THE GAME
+
+                if (www.downloadHandler.text == "Invalid username or password")
+                    label.text = www.downloadHandler.text;//SHOW IN LABEL
+                else
+                {
+                    // Handle successful login
+                    // Maybe insert to LoggedIn List
+                    // ------------> GO TO THE GAME 
+                }
+
             }
         }
+    }
+
+    public void HideErrorMessage()
+    {
+        label.text = "";
     }
 
 }

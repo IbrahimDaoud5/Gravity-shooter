@@ -73,3 +73,8 @@ crashlytics-build.properties
 Server/.idea/codeStyles/codeStyleConfig.xml
 Server/.idea/codeStyles/Project.xml
 *.class
+Server/.idea/sonarlint/*
+Server/.idea/aws.xml
+Server/.idea/dbnavigator.xml
+Server/target/classes/com/*
+
