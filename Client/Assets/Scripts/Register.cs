@@ -13,9 +13,14 @@ public class Register : MonoBehaviour
 
     void Start()
     {
+        usernameInputField.onValueChanged.AddListener(delegate { HideErrorMessage(); });
+        passwordInputField.onValueChanged.AddListener(delegate { HideErrorMessage(); });
+        confirmPasswordInputField.onValueChanged.AddListener(delegate { HideErrorMessage(); });
+    }
+    void Update()
+    {
 
     }
-    void Update() { }
 
     public void CallRegister()
     {
@@ -24,6 +29,7 @@ public class Register : MonoBehaviour
         string confirmPassword = confirmPasswordInputField.text;
         label.text = "";
         label.color = Color.red;
+
 
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
         {
@@ -74,5 +80,9 @@ public class Register : MonoBehaviour
                 }
             }
         }
+    }
+    public void HideErrorMessage()
+    {
+        label.text = "";
     }
 }
