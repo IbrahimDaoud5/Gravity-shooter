@@ -41,9 +41,10 @@ public class ChangeInput : MonoBehaviour
 
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            Debug.LogError(e.ToString()); // This will print the entire exception, including the stack trace
+            firstInput.Select();
+            // Debug.LogError(e.ToString()); // This will print the entire exception, including the stack trace
         }
 
 

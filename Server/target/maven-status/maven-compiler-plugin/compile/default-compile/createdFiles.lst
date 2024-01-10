@@ -1,5 +1,7 @@
 com\example\server\LoginController.class
+com\example\server\RegisterController.class
 com\example\server\LoginService.class
 com\example\server\LoginService$1.class
+com\example\server\RegisterService.class
 com\example\server\User.class
 com\example\server\ServerApplication.class

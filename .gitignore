@@ -78,3 +78,4 @@ Server/.idea/aws.xml
 Server/.idea/dbnavigator.xml
 Server/target/classes/com/*
 
+Server/target/maven-status/*
