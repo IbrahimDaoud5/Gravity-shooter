@@ -7,15 +7,32 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
+/**
+ * Service class for handling user registration.
+ * This class interacts with the database to register new users.
+ */
 @Service
 public class RegisterService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    /**
+     * Registers a new user with the provided username and password.
+     * It first checks if the user already exists in the database.
+     * If not, it attempts to insert a new record with the username and password.
+     *
+     * @param username The username of the user to be registered.
+     * @param password The password of the user to be registered.
+     * @return A string message indicating the outcome of the registration attempt.
+     *         Returns "User already exists" if the username is already taken,
+     *         "Registration successful" if the user is successfully registered,
+     *         or "Registration failed" if the registration process fails for other reasons.
+     * @throws DataAccessException if a data access exception occurs, not related to SQLIntegrityConstraintViolationException.
+     */
     public String register(String username, String password) {
         try{
-        // Check if user already exists
+        // Check if the user already exists
         String sqlCheck = "SELECT count(*) FROM users WHERE username = ?";
         Integer count = jdbcTemplate.queryForObject(sqlCheck, new Object[]{username}, Integer.class);
 
