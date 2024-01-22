@@ -68,14 +68,13 @@ public class Login : MonoBehaviour
             {
                 Debug.Log(www.downloadHandler.text);
 
-                if (www.downloadHandler.text == "Invalid username or password")
-                    label.text = www.downloadHandler.text;//SHOW IN LABEL
-                else
+                if (www.downloadHandler.text == "Login successful")
                 {
                     // Handle successful login
-                    // Maybe insert to LoggedIn List
-                    // ------------> GO TO THE GAME 
+                    // ------------> GO TO THE LOBBY 
                 }
+                else
+                    label.text = www.downloadHandler.text;//SHOW IN LABEL
 
             }
         }

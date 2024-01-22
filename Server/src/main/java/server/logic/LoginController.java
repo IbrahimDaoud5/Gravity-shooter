@@ -27,7 +27,12 @@ public class LoginController {
      */
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
-        String message = loginService.login(user.getUsername(), user.getPassword());
+        String message = loginService.login(user);
+        return ResponseEntity.ok(message);
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody User user) {
+        String message = loginService.logout(user.getUsername());
         return ResponseEntity.ok(message);
     }
 }
