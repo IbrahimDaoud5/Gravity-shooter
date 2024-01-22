@@ -25,6 +25,12 @@ public class UIManager : MonoBehaviour
         MainmenuPanel.SetActive(false);
         LoginPanel.SetActive(true);
     }
+    public void ShowMainmenuPanel()
+    {
+        ClearInputFields(RegisterPanel);
+        LoginPanel.SetActive(false);
+        MainmenuPanel.SetActive(true);
+    }
 
 
     public void ClearInputFields(GameObject panel)
