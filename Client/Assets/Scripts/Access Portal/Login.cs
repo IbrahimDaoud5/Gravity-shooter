@@ -8,7 +8,7 @@ public class Login : MonoBehaviour
 {
     public TMP_InputField usernameInputField, passwordInputField;
     public Text label;
-    public UIManager uiManager;
+    public UIManager UImanager;
     //public Button b;
 
     void Start()
@@ -72,9 +72,7 @@ public class Login : MonoBehaviour
                 if (www.downloadHandler.text == "Login successful")
                 {
                     // Handle successful login
-                    // Maybe insert to LoggedIn List
-                    // ------------> GO TO THE GAME 
-                    uiManager.ShowMainmenuPanel();
+                    UImanager.ShowLobbyPanel();
                     // ------------> GO TO THE LOBBY 
                 }
                 else

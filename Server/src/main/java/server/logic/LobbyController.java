@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-/*
+
 @RestController
 public class LobbyController {
 
@@ -15,9 +15,8 @@ public class LobbyController {
     private Lobby lobby;
 
     @PostMapping("/lobby")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        String message = lobby.start(user.getUsername());
+    public ResponseEntity<String> lobby(@RequestBody String username) {
+        String message = lobby.start(username);
         return ResponseEntity.ok(message);
     }
 }
-*/

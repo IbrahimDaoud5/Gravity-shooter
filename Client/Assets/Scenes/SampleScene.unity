@@ -1747,7 +1747,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000071863196}
+  m_AnchoredPosition: {x: 0, y: 0.000022818507}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &373760489
@@ -1887,7 +1887,7 @@ GameObject:
   - component: {fileID: 442940039}
   - component: {fileID: 442940040}
   m_Layer: 0
-  m_Name: loginRegisterSwitcher
+  m_Name: Switcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1901,12 +1901,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 442940038}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1123435256}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &442940040
 MonoBehaviour:
@@ -1922,7 +1922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LoginPanel: {fileID: 792375980}
   RegisterPanel: {fileID: 470406966}
-  MainmenuPanel: {fileID: 1808787508}
+  LobbyPanel: {fileID: 1808787508}
 --- !u!1 &445164632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2231,7 +2231,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 442940040}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: ShowLoginPanelAfterLogout
+        m_MethodName: ShowLoginPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2862,7 +2862,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1241266714}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.999822
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3666,7 +3666,7 @@ MonoBehaviour:
   usernameInputField: {fileID: 1222815440}
   passwordInputField: {fileID: 200855942}
   label: {fileID: 1226839963}
-  uiManager: {fileID: 442940040}
+  UImanager: {fileID: 0}
 --- !u!1 &818881215
 GameObject:
   m_ObjectHideFlags: 0
@@ -4508,7 +4508,6 @@ RectTransform:
   - {fileID: 792375981}
   - {fileID: 470406967}
   - {fileID: 1808787509}
-  - {fileID: 442940039}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 15.406}
   m_AnchorMin: {x: 0, y: 0}
@@ -5147,7 +5146,7 @@ RectTransform:
   m_Father: {fileID: 410853600}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 0.999822}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -5968,8 +5967,9 @@ GameObject:
   - component: {fileID: 1808787509}
   - component: {fileID: 1808787511}
   - component: {fileID: 1808787510}
+  - component: {fileID: 1808787512}
   m_Layer: 5
-  m_Name: MainmenuPanel
+  m_Name: LobbyPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6040,6 +6040,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1808787508}
   m_CullTransparentMesh: 1
+--- !u!114 &1808787512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808787508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aad13e587df9ada40ac9c4218da9c39d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UImanager: {fileID: 0}
 --- !u!1 &1852363982
 GameObject:
   m_ObjectHideFlags: 0
@@ -7344,3 +7357,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 925003252}
   - {fileID: 1123435256}
+  - {fileID: 442940039}

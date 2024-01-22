@@ -4,7 +4,7 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
 
-    public GameObject LoginPanel, RegisterPanel, MainmenuPanel;
+    public GameObject LoginPanel, RegisterPanel, LobbyPanel;
 
 
     public void ShowRegisterPanel()
@@ -17,19 +17,22 @@ public class UIManager : MonoBehaviour
     {
         ClearInputFields(LoginPanel);
         RegisterPanel.SetActive(false);
+        LobbyPanel.SetActive(false);
         LoginPanel.SetActive(true);
     }
+    /*
     public void ShowLoginPanelAfterLogout()//Panel not canvas
     {
         ClearInputFields(LoginPanel);
-        MainmenuPanel.SetActive(false);
+        LobbyPanel.SetActive(false);
         LoginPanel.SetActive(true);
     }
-    public void ShowMainmenuPanel()
+    */
+    public void ShowLobbyPanel()
     {
-        ClearInputFields(RegisterPanel);
+        ClearInputFields(LobbyPanel);
         LoginPanel.SetActive(false);
-        MainmenuPanel.SetActive(true);
+        LobbyPanel.SetActive(true);
     }
 
 

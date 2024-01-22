@@ -72,7 +72,7 @@ public class LoginService {
     }
 
     // Method to handle user logout
-    public String logout(String username) {
+    public synchronized String logout(String username) {
         User user = activeUsers.get(username);
         if (user != null) {
             activeUsers.remove(username);
