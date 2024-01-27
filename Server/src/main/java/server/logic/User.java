@@ -3,7 +3,6 @@ package server.logic;
 public class User {
         private String username;
         private String password;
-        private boolean isLoggedin;
         private boolean isReady;
 
     public User() {

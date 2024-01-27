@@ -21,11 +21,22 @@ public class LoginService {
     private JdbcTemplate jdbcTemplate;
 
 
-    // Map for storing active user sessions and their ready status
-    public static final ConcurrentHashMap<String, User> activeUsers = new ConcurrentHashMap<>();
+
+    private static final ConcurrentHashMap<String, User> activeUsers = new ConcurrentHashMap<>();
 
 
-    public void printActiveSessions() {
+
+    // Method to get a user
+    public static User getUser(String username) {
+        return activeUsers.get(username);
+    }
+
+    // Method to remove a user
+    public static void removeUser(String username) {
+        activeUsers.remove(username);
+    }
+
+    public static void printActiveSessions() {
         for (Map.Entry<String, User> entry : activeUsers.entrySet()) {
             String username = entry.getKey();
             User user = entry.getValue();
@@ -71,12 +82,5 @@ public class LoginService {
         else return "Invalid username or password";
     }
 
-    // Method to handle user logout
-    public synchronized String logout(String username) {
-        User user = activeUsers.get(username);
-        if (user != null) {
-            activeUsers.remove(username);
-        }
-        return "logged out successfully";
-    }
+
 }
