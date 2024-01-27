@@ -1,7 +1,5 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class Login : MonoBehaviour
@@ -22,11 +20,35 @@ public class Login : MonoBehaviour
     {
         string username = usernameInputField.text; // Access text from InputField
         string password = passwordInputField.text; // Access text from InputField
+        LoginData loginData = new LoginData(username, password);
+        string jsonData = JsonUtility.ToJson(loginData);
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             label.text = "Please fill in the required INFO";//SHOW IN LABEL
-        else StartCoroutine(LoginCoroutine(username, password));
+        else ServerRequestHandler.Instance.SendRequest("/login", jsonData, HandleResponse);
+    }
+    private void HandleResponse(string responseText)
+    {
+        if (responseText == null)
+        {
+            // Handle error
+            return;
+        }
+        else if (responseText == "Login successful")
+        {
+            UImanager.ShowLobbyPanel();
+            // Save the username in PlayerPrefs
+            PlayerPrefs.SetString("Username", usernameInputField.text);
+            PlayerPrefs.Save();
+        }
+        else
+            label.text = responseText;//SHOW IN LABEL
+
+        // Process the response
+        // Additional response handling logic...
     }
 
+
+    /*
     IEnumerator LoginCoroutine(string username, string password)
     {
 
@@ -81,6 +103,7 @@ public class Login : MonoBehaviour
             }
         }
     }
+    */
 
     public void HideErrorMessage()
     {

@@ -22,31 +22,19 @@ public class LoginService {
 
 
 
-    private static final ConcurrentHashMap<String, User> activeUsers = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<String, User> activeUsers = new ConcurrentHashMap<>();
 
 
 
-    // Method to get a user
-    public static User getUser(String username) {
-        User u =  new User("abc","123");
-        u.setReady(true);
-        //return activeUsers.get(username);
-        return u;
-    }
 
-    // Method to remove a user
-    public static void removeUser(String username) {
-        activeUsers.remove(username);
-    }
-
-    public static void printActiveSessions() {
+    public synchronized static void printActiveSessions() {
         for (Map.Entry<String, User> entry : activeUsers.entrySet()) {
             String username = entry.getKey();
             User user = entry.getValue();
             // Assuming User has a meaningful toString() implementation
             System.out.println("Username: " + username + ", User Info: " + user);
         }
-        System.out.println("*************************************************************");
+        System.out.println("############-------------------------------------------------###########");
     }
 
 
@@ -60,7 +48,7 @@ public class LoginService {
      * or "Invalid username or password" if authentication fails.
      */
     public String login(User user) {
-        printActiveSessions();
+        //printActiveSessions();
         String sql = "SELECT count(*) FROM users WHERE username = ? AND password = ?";
         Integer count = jdbcTemplate.queryForObject(
                 sql,

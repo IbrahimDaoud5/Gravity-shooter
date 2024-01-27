@@ -1,7 +1,5 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 
@@ -29,6 +27,8 @@ public class Register : MonoBehaviour
         string confirmPassword = confirmPasswordInputField.text;
         label.text = "";
         label.color = Color.red;
+        LoginData loginData = new LoginData(username, password);
+        string jsonData = JsonUtility.ToJson(loginData);
 
 
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
@@ -43,43 +43,26 @@ public class Register : MonoBehaviour
             label.text = msg;//SHOW IN LABEL
 
         }
-        else StartCoroutine(RegisterCoroutine(username, password));
+        else ServerRequestHandler.Instance.SendRequest("/register", jsonData, HandleResponse);
     }
 
-    IEnumerator RegisterCoroutine(string username, string password)
+    private void HandleResponse(string responseText)
     {
-        LoginData loginData = new LoginData (username, password);
-        string jsonData = JsonUtility.ToJson(loginData);
-
-        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(jsonData);
-
-        using (UnityWebRequest www = new UnityWebRequest(GlobalConfig.ServerUrl + "/register", "POST"))
+        if (responseText == null)
         {
-            www.certificateHandler = new AcceptAllCertificates(); // TEMPORARY - until we use CA
-            www.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
-            www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success) // If the connection is not successful
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                Debug.Log(www.downloadHandler.text);
-                if (www.downloadHandler.text != "Registration successful")
-                    label.text = www.downloadHandler.text;//SHOW IN LABEL
-
-                else  // ---> Registration successful
-                {
-                    string s = "You've successfully signed up, Please Log in";
-                    label.color = Color.green;
-                    label.text = s;//SHOW IN LABEL
-                }
-            }
+            // Handle error
+            return;
         }
+        else if (responseText != "Registration successful")
+            label.text = responseText;//SHOW IN LABEL
+        else  // ---> Registration successful
+        {
+            string s = "You've successfully signed up, Please Log in";
+            label.color = Color.green;
+            label.text = s;//SHOW IN LABEL
+        }
+        // Process the response
+        // Additional response handling logic...
     }
     public void HideErrorMessage()
     {

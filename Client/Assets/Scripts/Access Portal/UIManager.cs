@@ -20,14 +20,7 @@ public class UIManager : MonoBehaviour
         LobbyPanel.SetActive(false);
         LoginPanel.SetActive(true);
     }
-    /*
-    public void ShowLoginPanelAfterLogout()//Panel not canvas
-    {
-        ClearInputFields(LoginPanel);
-        LobbyPanel.SetActive(false);
-        LoginPanel.SetActive(true);
-    }
-    */
+
     public void ShowLobbyPanel()
     {
         ClearInputFields(LobbyPanel);

@@ -12,9 +12,14 @@ public class LobbyController {
     @Autowired
     private LobbyService lobbyService;
 
-    @GetMapping("/isReady")
-    public ResponseEntity<String> lobby(@RequestBody String username) {
-        String message = lobbyService.isReady(username);
+    @PostMapping("/setReady")
+    public ResponseEntity<String> lobby(@RequestBody User u) {
+        String message = lobbyService.setToReady(u.getUsername());
+        return ResponseEntity.ok(message);
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody User u) {
+        String message = lobbyService.logout(u.getUsername());
         return ResponseEntity.ok(message);
     }
 }

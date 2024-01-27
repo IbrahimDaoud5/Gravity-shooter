@@ -1,86 +1,52 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Networking;
-
+using UnityEngine.UI;
 public class Lobby : MonoBehaviour
 {
-
     public UIManager UImanager;
-
-    // Example data to send with the POST request
-    // Modify this class according to what data you need to send
+    public Text welcomeLabel;
 
     void Start()
     {
-        // Initialization if needed
-    }
 
+    }
     void Update()
     {
-        // Update logic if needed
+        string s = "Welcome " + PlayerPrefs.GetString("Username", "Guest");
+        welcomeLabel.color = Color.green;
+        welcomeLabel.text = s;//SHOW IN LABEL
     }
-
     public void CallLobby(string playerId)
     {
-        LoginData lobbyData = new LoginData("abc");
-        string jsonData = JsonUtility.ToJson(lobbyData);
-
-        StartCoroutine(LobbyCoroutine(jsonData));
-    }
-
-    IEnumerator LobbyCoroutine(string jsonData)
-    {
-        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(jsonData);
-
-        using (UnityWebRequest www = new UnityWebRequest(GlobalConfig.ServerUrl + "/lobby/isReady", "GET"))
+        if (ServerRequestHandler.Instance == null)
         {
-            www.certificateHandler = new AcceptAllCertificates(); // TEMPORARY - until we use CA
-            www.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
-            www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
-            yield return www.SendWebRequest();
-
-            switch (www.result)
-            {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError("Error: " + www.error);
-                    // Handle errors
-                    break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError("HTTP Error: " + www.error);
-                    // Handle HTTP errors
-                    break;
-                case UnityWebRequest.Result.Success:
-                    Debug.Log("Response: " + www.downloadHandler.text);
-                    // Process the successful response
-                    // For example, update the UI based on lobby data
-                    break;
-
-            }
-
-            if (www.result != UnityWebRequest.Result.Success) // If the connection is not successful
-            {
-
-                //label.enabled = true;
-                Debug.Log(www.error);
-            }
-            else
-            {
-                Debug.Log(www.downloadHandler.text);
-
-                if (www.downloadHandler.text == "ready")
-                {
-                    //SHOW in table
-                }
-                else
-                { //if not ready
-
-                }
-            }
+            Debug.LogError("ServerRequestHandler instance is null.");
+            return;
         }
+        LoginData lobbyData = new LoginData(PlayerPrefs.GetString("Username", "Guest"), "");
+        string jsonData = JsonUtility.ToJson(lobbyData);
+        ServerRequestHandler.Instance.SendRequest("/lobby/setReady", jsonData, HandleResponse);
     }
 
-    // Additional methods if needed
+    public void CallLogout(string playerId)
+    {
+        LoginData lobbyData = new LoginData(PlayerPrefs.GetString("Username", "Guest"), "");
+        string jsonData = JsonUtility.ToJson(lobbyData);
+        ServerRequestHandler.Instance.SendRequest("/lobby/logout", jsonData, HandleResponse);
+    }
+
+    private void HandleResponse(string responseText)
+    {
+        if (responseText == null)
+        {
+            // Handle error
+            return;
+        }
+        else if (responseText == "logged out successfully")
+        {
+            UImanager.ShowLoginPanel();
+        }
+
+        // Process the response
+        // Additional response handling logic...
+    }
 }
