@@ -9,12 +9,6 @@ public class Lobby : MonoBehaviour
 
     // Example data to send with the POST request
     // Modify this class according to what data you need to send
-    [System.Serializable]
-    public class LobbyData
-    {
-        public string playerId;
-        // Add other fields as needed
-    }
 
     void Start()
     {
@@ -28,7 +22,7 @@ public class Lobby : MonoBehaviour
 
     public void CallLobby(string playerId)
     {
-        LobbyData lobbyData = new LobbyData { playerId = "ds" };
+        LoginData lobbyData = new LoginData("abc");
         string jsonData = JsonUtility.ToJson(lobbyData);
 
         StartCoroutine(LobbyCoroutine(jsonData));
@@ -38,8 +32,9 @@ public class Lobby : MonoBehaviour
     {
         byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(jsonData);
 
-        using (UnityWebRequest www = new UnityWebRequest(GlobalConfig.ServerUrl + "/lobby", "POST"))
+        using (UnityWebRequest www = new UnityWebRequest(GlobalConfig.ServerUrl + "/lobby/isReady", "GET"))
         {
+            www.certificateHandler = new AcceptAllCertificates(); // TEMPORARY - until we use CA
             www.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
             www.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
             www.SetRequestHeader("Content-Type", "application/json");
@@ -62,6 +57,27 @@ public class Lobby : MonoBehaviour
                     // Process the successful response
                     // For example, update the UI based on lobby data
                     break;
+
+            }
+
+            if (www.result != UnityWebRequest.Result.Success) // If the connection is not successful
+            {
+
+                //label.enabled = true;
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+
+                if (www.downloadHandler.text == "ready")
+                {
+                    //SHOW in table
+                }
+                else
+                { //if not ready
+
+                }
             }
         }
     }

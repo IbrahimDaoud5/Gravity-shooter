@@ -28,7 +28,10 @@ public class LoginService {
 
     // Method to get a user
     public static User getUser(String username) {
-        return activeUsers.get(username);
+        User u =  new User("abc","123");
+        u.setReady(true);
+        //return activeUsers.get(username);
+        return u;
     }
 
     // Method to remove a user

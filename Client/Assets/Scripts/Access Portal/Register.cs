@@ -48,7 +48,7 @@ public class Register : MonoBehaviour
 
     IEnumerator RegisterCoroutine(string username, string password)
     {
-        LoginData loginData = new LoginData { username = username, password = password };
+        LoginData loginData = new LoginData (username, password);
         string jsonData = JsonUtility.ToJson(loginData);
 
         byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(jsonData);

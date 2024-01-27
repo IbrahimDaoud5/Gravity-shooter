@@ -30,7 +30,7 @@ public class Login : MonoBehaviour
     IEnumerator LoginCoroutine(string username, string password)
     {
 
-        LoginData loginData = new LoginData { username = username, password = password };
+        LoginData loginData = new LoginData (username,password );
         string jsonData = JsonUtility.ToJson(loginData);
         //Debug.Log(jsonData);
 
