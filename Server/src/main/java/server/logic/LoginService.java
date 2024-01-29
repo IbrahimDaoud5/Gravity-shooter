@@ -62,6 +62,7 @@ public class LoginService {
 
         if (count != null && count > 0) {
             user.setReady(false);
+            user.setInGame(false);
             synchronized (activeUsers) {
                 if (!activeUsers.containsKey(user.getUsername())) {
                     activeUsers.put(user.getUsername(), user);

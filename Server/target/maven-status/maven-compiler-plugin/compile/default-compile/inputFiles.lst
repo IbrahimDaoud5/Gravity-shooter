@@ -1,6 +1,8 @@
-C:\Users\boroa\Gravity-shooter\Server\src\main\java\com\example\server\ServerApplication.java
-C:\Users\boroa\Gravity-shooter\Server\src\main\java\com\example\server\RegisterService.java
-C:\Users\boroa\Gravity-shooter\Server\src\main\java\com\example\server\RegisterController.java
-C:\Users\boroa\Gravity-shooter\Server\src\main\java\com\example\server\User.java
-C:\Users\boroa\Gravity-shooter\Server\src\main\java\com\example\server\LoginService.java
-C:\Users\boroa\Gravity-shooter\Server\src\main\java\com\example\server\LoginController.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\RegisterController.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\LoginService.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\RegisterService.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\LobbyService.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\User.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\LoginController.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\ServerApplication.java
+C:\Users\boroa\Gravity-shooter\Server\src\main\java\server\logic\LobbyController.java

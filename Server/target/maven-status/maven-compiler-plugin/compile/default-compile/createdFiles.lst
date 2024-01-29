@@ -1,7 +1,9 @@
-com\example\server\LoginController.class
-com\example\server\RegisterController.class
-com\example\server\LoginService.class
-com\example\server\LoginService$1.class
-com\example\server\RegisterService.class
-com\example\server\User.class
-com\example\server\ServerApplication.class
+server\logic\RegisterService.class
+server\logic\RegisterController.class
+server\logic\LobbyService.class
+server\logic\LoginController.class
+server\logic\LoginService$1.class
+server\logic\ServerApplication.class
+server\logic\LoginService.class
+server\logic\User.class
+server\logic\LobbyController.class

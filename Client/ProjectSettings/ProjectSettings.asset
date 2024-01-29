@@ -700,11 +700,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: f5b3be23-e04f-4665-8b46-c56682d32f60
+  cloudProjectId: 84d46760-e0f7-4b1d-8824-8c0c4168dde6
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Gravity Shooter
-  organizationId: madaraxdxd
+  organizationId: borod5
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

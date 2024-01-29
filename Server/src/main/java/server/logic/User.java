@@ -4,6 +4,7 @@ public class User {
         private String username;
         private String password;
         private boolean isReady;
+        private boolean inGame;
 
     public User() {
     }
@@ -25,6 +26,8 @@ public class User {
     }
     public boolean isReady() { return isReady;}
     public void setReady(boolean isReady) {  this.isReady = isReady; }
+    public boolean isInGame() { return inGame;}
+    public void setInGame(boolean inGame) {  this.inGame = inGame; }
     @Override
     public String toString() {
         return "User{" +
