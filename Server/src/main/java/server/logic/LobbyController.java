@@ -30,4 +30,45 @@ public class LobbyController {
         System.out.println(Arrays.toString(message));
         return ResponseEntity.ok(message);
     }
+
+    @PostMapping("/checkInvite")
+    public ResponseEntity<String> checkInvite(@RequestBody User user) {
+        System.out.println("\n"+user+"\n");
+        String inviter = lobbyService.checkInvitation(user.getUsername());
+        if (!inviter.isEmpty()) {
+            return ResponseEntity.ok("You have an invitation from " + inviter);
+        }
+        return ResponseEntity.ok("No invitations");
+    }
+    @PostMapping("/sendInvite")
+    public ResponseEntity<String> sendInvite(@RequestBody InviteRequestDto inviteRequest) {
+        String fromUsername = inviteRequest.getFromUsername();
+        String toUsername = inviteRequest.getToUsername();
+        String message = lobbyService.sendInvitation(fromUsername, toUsername);
+        return ResponseEntity.ok(message);
+    }
+
+
+    // Static inner class for DTO
+    public static class InviteRequestDto {
+        private String fromUsername;
+        private String toUsername;
+
+        // Getters and setters
+        public String getFromUsername() {
+            return fromUsername;
+        }
+
+        public void setFromUsername(String fromUsername) {
+            this.fromUsername = fromUsername;
+        }
+
+        public String getToUsername() {
+            return toUsername;
+        }
+
+        public void setToUsername(String toUsername) {
+            this.toUsername = toUsername;
+        }
+    }
 }

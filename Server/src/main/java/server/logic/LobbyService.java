@@ -39,4 +39,39 @@ public class LobbyService {
         System.out.println(a);
         return a;
     }
+
+    // Method to send an invitation
+    public String sendInvitation(String fromUsername, String toUsername) {
+        User toUser = activeUsers.get(toUsername);
+        if (toUser != null && !toUser.isInGame()) {
+            toUser.setInvitedBy(fromUsername);
+            return "Invitation sent to " + toUsername;
+        }
+        return "User is not available";
+    }
+
+    // Method for a user to check their invitation
+    public String checkInvitation(String username) {
+        User user = null;
+        System.out.println("Username is ----> "+username);
+        try {
+            //printActiveSessions();
+            user = activeUsers.get(username);
+
+        }
+        catch (NullPointerException nullPointerException)
+        {
+
+        }
+
+
+        if (user != null && user.getInvitedBy() != null && !user.getInvitedBy().isEmpty()) {
+            String inviter = user.getInvitedBy();
+            user.setInvitedBy(null); // Reset invitation after checking
+            return inviter;
+        }
+        return "";
+    }
+
+
 }

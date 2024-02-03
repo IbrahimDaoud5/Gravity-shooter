@@ -48,7 +48,7 @@ public class LoginService {
      * or "Invalid username or password" if authentication fails.
      */
     public String login(User user) {
-        //printActiveSessions();
+
         String sql = "SELECT count(*) FROM users WHERE username = ? AND password = ?";
         Integer count = jdbcTemplate.queryForObject(
                 sql,
@@ -66,6 +66,10 @@ public class LoginService {
             synchronized (activeUsers) {
                 if (!activeUsers.containsKey(user.getUsername())) {
                     activeUsers.put(user.getUsername(), user);
+                    // TESTING ***************************************************************
+                    printActiveSessions();
+                    // TESTING ***************************************************************
+
                     return "Login successful";
                 }
                 else return "User is already logged in";
