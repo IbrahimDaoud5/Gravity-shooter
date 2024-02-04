@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.U2D;
 
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     private BoxCollider2D coll;
-
+    Transform childTransform;
 
     private Animator animator;
     private float dirx = 0f;
@@ -18,12 +15,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask jumpableGround;
 
 
-    private enum MovmentState {idle, running,jumping,falling }
+    private enum MovmentState { idle, running, jumping, falling }
+
+
 
 
     // Start is called before the first frame update
     private void Start()
     {
+        childTransform = transform.Find("bow");
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
@@ -34,9 +34,10 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         dirx = Input.GetAxisRaw("Horizontal");
-        rb.velocity=new Vector2(dirx* moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(dirx * moveSpeed, rb.velocity.y);
 
-        if (Input.GetButtonDown("Jump")&& IsGrounded())
+
+        if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
@@ -47,17 +48,32 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateAnimationState()
     {
         MovmentState state;
-       
+
         if (dirx > 0f)
         {
             state = MovmentState.running;
             sprite.flipX = false;
 
+            // Assuming the character is facing right, adjust bow position
+            if (childTransform != null)
+            {
+                Vector3 childPosition = childTransform.localPosition;
+                childPosition.x = Mathf.Abs(childPosition.x); // Ensure the x position is positive
+                childTransform.localPosition = childPosition;
+            }
         }
         else if (dirx < 0f)
         {
-            sprite.flipX = true;
             state = MovmentState.running;
+            sprite.flipX = true;
+
+            // Assuming the character is facing left, adjust bow position
+            if (childTransform != null)
+            {
+                Vector3 childPosition = childTransform.localPosition;
+                childPosition.x = -Mathf.Abs(childPosition.x); // Ensure the x position is negative
+                childTransform.localPosition = childPosition;
+            }
         }
         else
         {
@@ -75,9 +91,10 @@ public class PlayerMovement : MonoBehaviour
         animator.SetInteger("state", (int)state);
     }
 
+
     private bool IsGrounded()
     {
-        return Physics2D.BoxCast(coll.bounds.center,coll.bounds.size,0f,Vector2.down,.1f, jumpableGround); 
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
 
 }
