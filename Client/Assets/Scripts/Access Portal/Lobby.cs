@@ -16,13 +16,13 @@ public class Lobby : MonoBehaviour
     public Transform lobbyPanelTransform;
     public TMP_Text messageText;
     private List<GameObject> activePopups = new List<GameObject>();
+    public Transform scrollViewContent;
+    public GameObject entryPrefab;
 
 
     void Start()
     {
         errorLabel.fontStyle = FontStyle.Bold;
-        // Start checking for invitations immediately and then every 3 seconds
-        InvokeRepeating(nameof(CheckForInvitations), 0f, 3f);
 
         if (searchInputField != null)
         {
@@ -35,6 +35,19 @@ public class Lobby : MonoBehaviour
         welcomeLabel.color = Color.green;
         welcomeLabel.text = s;//SHOW IN LABEL
     }
+    void OnEnable()
+    {
+        errorLabel.text = "";
+
+        // Start checking for invitations immediately and then every 3 seconds
+        InvokeRepeating(nameof(CheckForInvitations), 0f, 3f);
+    }
+    void OnDisable()
+    {
+        CancelInvoke(nameof(CheckForInvitations));
+    }
+
+
     public void CallLobby(string playerId)
     {
         if (ServerRequestHandler.Instance == null)
@@ -69,7 +82,7 @@ public class Lobby : MonoBehaviour
 
     public void CallInvite()
     {
-        string toUsername = searchInputField.text; // Assuming this is the username to invite
+        string toUsername = searchInputField.text;
         string fromUsername = PlayerPrefs.GetString("Username", "Guest"); // Your username
 
         if (toUsername == "")
@@ -113,6 +126,8 @@ public class Lobby : MonoBehaviour
             Debug.Log("Invite response: " + responseText);
             errorLabel.color = Color.green;
             errorLabel.text = responseText;
+            AddEntryToScrollView("abc787");
+
         }
     }
 
@@ -180,7 +195,15 @@ public class Lobby : MonoBehaviour
 
 
 
+    public void AddEntryToScrollView(string text)
+    {
+        if (scrollViewContent == null || entryPrefab == null) return;
 
+        GameObject newEntry = Instantiate(entryPrefab, scrollViewContent);
+        TMP_Text textComponent = newEntry.GetComponent<TMP_Text>();
+        if (textComponent != null)
+            textComponent.text = text;
+    }
 
 
 
@@ -195,7 +218,6 @@ public class Lobby : MonoBehaviour
 
     public void CallLogout(string playerId)
     {
-        CancelInvoke(nameof(CheckForInvitations)); // Stops CheckForInvitations from being repeatedly invoked
         LoginData lobbyData = new LoginData(PlayerPrefs.GetString("Username", "Guest"), "");
         string jsonData = JsonUtility.ToJson(lobbyData);
         ServerRequestHandler.Instance.SendRequest("/lobby/logout", jsonData, HandleResponse);
@@ -220,7 +242,6 @@ public class Lobby : MonoBehaviour
 
     private void HandleSearchResponse(string responseText)
     {
-        Debug.Log(responseText);
         if (responseText == null)
         {
             // Handle error
