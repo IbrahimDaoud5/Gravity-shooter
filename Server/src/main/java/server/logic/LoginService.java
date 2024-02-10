@@ -27,14 +27,14 @@ public class LoginService {
 
 
 
-    public synchronized static void printActiveSessions() {
+    public static void printActiveSessions() {
+        System.out.println("------------------------------------------------------------------------------###########\nLOGGED IN USERS:\n");
         for (Map.Entry<String, User> entry : activeUsers.entrySet()) {
             String username = entry.getKey();
             User user = entry.getValue();
-            // Assuming User has a meaningful toString() implementation
-            System.out.println("Username: " + username + ", User Info: " + user);
+            System.out.println("User Info: " + user);
         }
-        System.out.println("############-------------------------------------------------###########");
+        System.out.println("------------------------------------------------------------------------------###########");
     }
 
 

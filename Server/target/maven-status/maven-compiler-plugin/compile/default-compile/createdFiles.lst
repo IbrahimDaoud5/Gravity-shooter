@@ -7,3 +7,4 @@ server\logic\ServerApplication.class
 server\logic\LoginService.class
 server\logic\User.class
 server\logic\LobbyController.class
+server\logic\LobbyController$InviteRequestDto.class

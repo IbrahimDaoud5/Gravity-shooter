@@ -3,7 +3,7 @@ package server.logic;
 public class User {
         private String username;
         private String password;
-        private boolean isReady;
+        private boolean isReady; // Has to be atomic? users can set their own isReady, and can read the other's is ready.
         private boolean inGame;
         private String invitedBy;
 
@@ -36,11 +36,13 @@ public class User {
     public void setInvitedBy(String invitedBy) {
         this.invitedBy = invitedBy;
     }
+
     @Override
     public String toString() {
         return "User{" +
                 "username='" + username + '\'' +
                 ", isReady=" + isReady +
+                ", inGame=" + inGame +
                 '}';
     }
 }

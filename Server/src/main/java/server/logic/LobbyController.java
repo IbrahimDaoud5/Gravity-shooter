@@ -27,15 +27,14 @@ public class LobbyController {
     @PostMapping("/showConnectedUsers")
     public ResponseEntity<String[]> showConnectedUsers(@RequestParam(required = false) String query) {
         String[] message = lobbyService.showConnectedUsers(query);
-        System.out.println(Arrays.toString(message));
         return ResponseEntity.ok(message);
     }
 
     @PostMapping("/checkInvite")
     public ResponseEntity<String> checkInvite(@RequestBody User user) {
-        System.out.println("\n"+user+"\n");
         String inviter = lobbyService.checkInvitation(user.getUsername());
         if (!inviter.isEmpty()) {
+
             return ResponseEntity.ok("You have an invitation from " + inviter);
         }
         return ResponseEntity.ok("No invitations");

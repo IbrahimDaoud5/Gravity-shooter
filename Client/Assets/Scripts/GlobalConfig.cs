@@ -7,3 +7,4 @@ public static class GlobalConfig
     public static readonly string ServerUrl = $"https://{serverURL}:{port}";
 }
 
+

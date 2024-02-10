@@ -24,20 +24,24 @@ public class LobbyService {
         return "logged out successfully";
     }
 
+
     public String setToReady(String username) {
-        printActiveSessions();
-        activeUsers.get(username).setReady(true); ////////////////////////////////// HANDLE get returning null
-        return username + "'s status is set to READY";
+        User user = activeUsers.get(username);
+        if (user != null) {
+            user.setReady(true);
+            return username + "'s status is set to READY";
+        } else {
+            return "User " + username + " not found.";
+        }
     }
 
+
     public String[] showConnectedUsers(String query) {
-        String[] a = activeUsers.entrySet().stream()
+        return activeUsers.entrySet().stream()
                 .filter(entry -> !entry.getValue().isInGame())
                 .filter(entry -> query == null || entry.getKey().startsWith(query))
                 .map(Map.Entry::getKey)
                 .toArray(String[]::new);
-        System.out.println(a);
-        return a;
     }
 
     // Method to send an invitation
@@ -52,18 +56,8 @@ public class LobbyService {
 
     // Method for a user to check their invitation
     public String checkInvitation(String username) {
-        User user = null;
-        System.out.println("Username is ----> "+username);
-        try {
-            //printActiveSessions();
-            user = activeUsers.get(username);
-
-        }
-        catch (NullPointerException nullPointerException)
-        {
-
-        }
-
+        User user;
+        user = activeUsers.get(username);
 
         if (user != null && user.getInvitedBy() != null && !user.getInvitedBy().isEmpty()) {
             String inviter = user.getInvitedBy();
