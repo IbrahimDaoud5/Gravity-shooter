@@ -18,6 +18,7 @@ public class Lobby : MonoBehaviour
     private List<GameObject> activePopups = new List<GameObject>();
     public Transform scrollViewContent;
     public GameObject entryPrefab;
+    public SceneLoader sceneLoader;
 
 
     void Start()
@@ -206,7 +207,10 @@ public class Lobby : MonoBehaviour
     }
 
 
-
+    public void PlaySolo()
+    {
+        sceneLoader.LoadScene();
+    }
 
 
 
