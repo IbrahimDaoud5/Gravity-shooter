@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ public class TargetHit : MonoBehaviour
 {
     private static int targets = 0;
 
-    [SerializeField] private Text targetsText;
+    private TextMeshProUGUI targetsText;
     private bool hasBeenHit = false;
 
     private void Start()
@@ -18,7 +19,7 @@ public class TargetHit : MonoBehaviour
         if (targetsTextObject != null)
         {
             // Try to get the Text component from the found GameObject
-            targetsText = targetsTextObject.GetComponent<Text>();
+            targetsText = targetsTextObject.GetComponent<TextMeshProUGUI>();
 
             if (targetsText == null)
             {
@@ -42,6 +43,11 @@ public class TargetHit : MonoBehaviour
             if (targetsText != null)
             {
                 targetsText.text = "Targets: " + targets;
+                /*adding the 5 shots change gravity feature
+                Vector2 newGravity = new Vector2(0f, 0f);
+                Physics2D.gravity = newGravity;
+                */
+
             }
 
             StartCoroutine(DestroyAfterDelay(collision.gameObject));
@@ -55,5 +61,9 @@ public class TargetHit : MonoBehaviour
         // Destroy the target and the arrow
         Destroy(target);
         Destroy(gameObject);
+    }
+    public static void SetTargets(int value)
+    {
+        targets = value;
     }
 }

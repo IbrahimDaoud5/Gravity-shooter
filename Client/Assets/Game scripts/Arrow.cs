@@ -21,6 +21,7 @@ public class Arrow : MonoBehaviour
         if (hasHit==false)
         {
             float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
+            //Debug.Log("Arrow Rotation Angle: " + angle);
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }

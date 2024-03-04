@@ -7,6 +7,8 @@ TagManager:
   - Target
   - Arrow
   - DenyButton
+  - Wind
+  - Bow
   layers:
   - Default
   - TransparentFX
@@ -19,9 +21,9 @@ TagManager:
   - Arrow
   - player1
   - back
-  - 
-  - 
-  - 
+  - target
+  - Bow
+  - Wind
   - 
   - 
   - 
@@ -44,6 +46,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: layer1
+  - name: top
     uniqueID: 4138170871
     locked: 0

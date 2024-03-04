@@ -85,3 +85,6 @@ Client/ProjectSettings/EditorBuildSettings.asset
 Client/venv/*
 
 
+Client/ProjectSettings/ProjectSettings.asset
+Client/ProjectSettings/ProjectSettings.asset
+Client/ProjectSettings/QualitySettings.asset

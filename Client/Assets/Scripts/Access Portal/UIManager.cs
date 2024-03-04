@@ -1,10 +1,22 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviour
 {
 
     public GameObject LoginPanel, RegisterPanel, LobbyPanel;
+
+    void Start()
+    {
+        string panelToShow = PlayerPrefs.GetString("PanelToShow", "");
+
+        if (panelToShow == "Lobby")
+        {
+            ShowLobbyPanel();
+        }
+        PlayerPrefs.DeleteKey("PanelToShow");
+    }
 
 
     public void ShowRegisterPanel()
