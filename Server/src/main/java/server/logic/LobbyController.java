@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-
 
 @RestController
 @RequestMapping("/lobby")
@@ -46,6 +44,20 @@ public class LobbyController {
         String message = lobbyService.sendInvitation(fromUsername, toUsername);
         return ResponseEntity.ok(message);
     }
+    @PostMapping("/updateInvitationStatus")
+    public ResponseEntity<String> updateInvitationStatus(@RequestBody InviteRequestDto1 inviteRequest) {
+        String fromUsername = inviteRequest.getFromUsername();
+        String status = inviteRequest.getStatus();
+        String message = lobbyService.updateInvitationStatus(fromUsername, status);
+
+        return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/checkInvitationStatus")
+    public ResponseEntity<String> checkInvitationStatus(@RequestBody User u) {
+        String message =  lobbyService.checkInvitationStatus(u.getUsername());
+        return ResponseEntity.ok(message);
+    }
 
 
     // Static inner class for DTO
@@ -68,6 +80,35 @@ public class LobbyController {
 
         public void setToUsername(String toUsername) {
             this.toUsername = toUsername;
+        }
+    }
+    public static class InviteRequestDto1 {
+        private String fromUsername;
+        private String toUsername;
+        private String status;
+        // Getters and setters
+        public String getFromUsername() {
+            return fromUsername;
+        }
+
+        public void setFromUsername(String fromUsername) {
+            this.fromUsername = fromUsername;
+        }
+
+        public String getToUsername() {
+            return toUsername;
+        }
+
+        public void setToUsername(String toUsername) {
+            this.toUsername = toUsername;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
         }
     }
 }

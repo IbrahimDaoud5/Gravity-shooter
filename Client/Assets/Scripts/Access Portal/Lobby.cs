@@ -19,6 +19,9 @@ public class Lobby : MonoBehaviour
     public Transform scrollViewContent;
     public GameObject entryPrefab;
     public SceneLoader sceneLoader;
+    Color darkGreen = new(0f, 0.5f, 0f);
+    Color purple = new(0.6f, 0f, 0.6f);
+    private List<string> alreadyInvited = new List<string>();
 
 
     void Start()
@@ -32,24 +35,40 @@ public class Lobby : MonoBehaviour
     }
     void Update()
     {
-        string s = "Welcome " + PlayerPrefs.GetString("Username", "Guest");
-        welcomeLabel.color = Color.green;
-        welcomeLabel.text = s;//SHOW IN LABEL
+
     }
     void OnEnable()
     {
+        string s = "Welcome " + PlayerPrefs.GetString("Username", "Guest");
+        welcomeLabel.color = Color.green;
+        welcomeLabel.text = s;//SHOW IN LABEL 
+
         errorLabel.text = "";
+
+        //Put the current player in the invitation ScrollView
+        AddEntryToScrollView(PlayerPrefs.GetString("Username", "Guest") + " (me)", "Not Ready", Color.red);
 
         // Start checking for invitations immediately and then every 3 seconds
         InvokeRepeating(nameof(CheckForInvitations), 0f, 3f);
+
     }
     void OnDisable()
     {
         CancelInvoke(nameof(CheckForInvitations));
+        CancelInvoke(nameof(CheckInvitationsStatus));
+
+        if (scrollViewContent != null)
+        {
+            // Iterate through all children of the scrollViewContent and destroy them
+            foreach (Transform child in scrollViewContent)
+            {
+                Destroy(child.gameObject);
+            }
+        }
     }
 
 
-    public void CallLobby(string playerId)
+    public void CallReady()
     {
         if (ServerRequestHandler.Instance == null)
         {
@@ -83,16 +102,21 @@ public class Lobby : MonoBehaviour
 
     public void CallInvite()
     {
+        errorLabel.color = Color.red;
         string toUsername = searchInputField.text;
         string fromUsername = PlayerPrefs.GetString("Username", "Guest"); // Your username
 
         if (toUsername == "")
         {
-            errorLabel.color = Color.red;
             errorLabel.text = "Enter username first !";
             return;
         }
-
+        // Check if the user has already been invited
+        else if (alreadyInvited.Contains(toUsername))
+        {
+            errorLabel.text = $"Invitation already sent to {toUsername}.";
+            return;
+        }
         var inviteData = new InviteData
         {
             fromUsername = fromUsername,
@@ -127,11 +151,19 @@ public class Lobby : MonoBehaviour
             Debug.Log("Invite response: " + responseText);
             errorLabel.color = Color.green;
             errorLabel.text = responseText;
-            AddEntryToScrollView("abc787");
+            // Add the user to the alreadyInvited list if its not there
+            string usernameToAdd = searchInputField.text;
 
+            if (IsUserStatus(usernameToAdd, "Denied Invitation"))
+                DeleteEntryFromScrollView(usernameToAdd);
+            alreadyInvited.Add(usernameToAdd);
+            AddEntryToScrollView(usernameToAdd, "Invited", purple);
+
+
+            // Start invoking the CheckInvitationsStatus method every 2 seconds
+            InvokeRepeating(nameof(CheckInvitationsStatus), 0f, 2f);
         }
     }
-
 
     public void CheckForInvitations()
     {
@@ -141,7 +173,6 @@ public class Lobby : MonoBehaviour
 
         ServerRequestHandler.Instance.SendRequest("/lobby/checkInvite", jsonData, HandleCheckInvitationsResponse);
     }
-
 
     // Callback method to handle the response from checking for invitations
     private void HandleCheckInvitationsResponse(string responseText)
@@ -168,19 +199,57 @@ public class Lobby : MonoBehaviour
             // Add popup to the list of active popups
             activePopups.Add(popupInstance);
 
-            // Find the Deny button and attach the ClosePopup action
-            Button denyButton = popupInstance.transform.Find("DenyBtn").GetComponent<Button>();
 
+            // Find and setup the Accept button
+            Button acceptButton = popupInstance.transform.Find("AcceptBtn").GetComponent<Button>();
+            if (acceptButton != null)
+            {
+                acceptButton.onClick.RemoveAllListeners();
+                acceptButton.onClick.AddListener(() => UpdateInvitationStatus(popupInstance, "accepted"));
+                // Go To MULTI GAME (when you accept the invitation)
+            }
+
+            // Setup the Deny button similarly
+            Button denyButton = popupInstance.transform.Find("DenyBtn").GetComponent<Button>();
             if (denyButton != null)
             {
-                denyButton.onClick.RemoveAllListeners(); // Clear existing listeners to prevent duplication
-                denyButton.onClick.AddListener(() => ClosePopup(popupInstance));
+                denyButton.onClick.RemoveAllListeners();
+                denyButton.onClick.AddListener(() => UpdateInvitationStatus(popupInstance, "denied"));
             }
+
         }
         else if (string.IsNullOrEmpty(responseText))
         {
             Debug.LogError("Error checking for invitations or no response from server.");
         }
+    }
+    [Serializable]
+    public class InvitationStatusData
+    {
+        public string fromUsername;
+        public string toUsername;
+        public string status;
+    }
+    private void UpdateInvitationStatus(GameObject popupInstance, string status)
+    {
+        // Construct the data to send, including the action
+        var invitationStatusData = new InvitationStatusData
+        {
+            fromUsername = PlayerPrefs.GetString("Username", "Guest"),
+            toUsername = searchInputField.text, // Assuming this is the invited user's username
+            status = status // "accepted" or "denied"
+        };
+        string jsonData = JsonUtility.ToJson(invitationStatusData);
+
+        ServerRequestHandler.Instance.SendRequest("/lobby/updateInvitationStatus", jsonData, HandleInvitationStatusResponse);
+
+        // Close the popup regardless of the action
+        ClosePopup(popupInstance);
+    }
+    private void HandleInvitationStatusResponse(string responseText)
+    {
+        // Handle the server's response to the invitation status update
+        Debug.Log("Invitation status updated: " + responseText);
     }
 
     void ClosePopup(GameObject popupInstance)
@@ -195,30 +264,71 @@ public class Lobby : MonoBehaviour
 
 
 
-
-    public void AddEntryToScrollView(string text)
+    public void AddEntryToScrollView(string username, string status, Color colorOfStatus)
     {
-        if (scrollViewContent == null || entryPrefab == null) return;
+        if (entryPrefab == null || scrollViewContent == null) return;
 
+        // Instantiate the prefab as a child of the scrollViewContent
+        entryPrefab.SetActive(true);
         GameObject newEntry = Instantiate(entryPrefab, scrollViewContent);
-        TMP_Text textComponent = newEntry.GetComponent<TMP_Text>();
-        if (textComponent != null)
-            textComponent.text = text;
+        entryPrefab.SetActive(false);
+        // Find and set the Username and Status text components
+        TMP_Text[] texts = newEntry.GetComponentsInChildren<TMP_Text>();
+        foreach (TMP_Text text in texts)
+        {
+            if (text.gameObject.name == "UsernameTxt") // Assuming the GameObject name is "Username"
+            {
+                text.text = username;
+            }
+            else if (text.gameObject.name == "StatusTxt") // Assuming the GameObject name is "Status"
+            {
+                text.color = colorOfStatus;
+                text.text = status;
+            }
+        }
+    }
+
+
+    public void UpdateUserStatus(string username, string newStatus, Color statusColor)
+    {
+        // Check if the scrollViewContent has any children
+        if (scrollViewContent.childCount > 0)
+        {
+            // Iterate through all children of the scrollViewContent
+            for (int i = 0; i < scrollViewContent.childCount; i++)
+            {
+
+                // Get the child GameObject
+                GameObject child = scrollViewContent.GetChild(i).gameObject;
+                // Find the UsernameTxt and StatusTxt within the child GameObject
+                TMP_Text usernameText = child.transform.Find("UsernameTxt").GetComponent<TMP_Text>();
+                TMP_Text statusText = child.transform.Find("StatusTxt").GetComponent<TMP_Text>();
+
+                // Check if the current child is the one with the matching username
+                if (usernameText != null && usernameText.text == username)
+                {
+                    // If found, update the status text
+                    if (statusText != null)
+                    {
+                        statusText.text = newStatus;
+                        statusText.color = statusColor;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No entries in the ScrollView to search through.");
+        }
     }
 
 
     public void PlaySolo()
     {
         sceneLoader.LoadScene();
+        // Here we need to send to the server to update the player status to: inGame
     }
-
-
-
-
-
-
-
-
 
     public void CallLogout(string playerId)
     {
@@ -228,21 +338,22 @@ public class Lobby : MonoBehaviour
     }
 
     private void HandleResponse(string responseText)
-    {
+    { // for ready and for logout
         if (responseText == null)
         {
-            // Handle error
+            Debug.LogError("responseText is Null");
             return;
         }
         else if (responseText == "logged out successfully")
         {
             UImanager.ShowLoginPanel();
         }
+        else if (responseText == (PlayerPrefs.GetString("Username", "Guest") + "'s status is set to READY"))
+        {
+            UpdateUserStatus((PlayerPrefs.GetString("Username", "Guest") + " (me)"), "Ready", darkGreen);
+        }
 
-        // Process the response
-        // Additional response handling logic...
     }
-
 
     private void HandleSearchResponse(string responseText)
     {
@@ -267,4 +378,97 @@ public class Lobby : MonoBehaviour
             searchableDropdown.AddItemToScrollRect(new List<string>(users));
         }
     }
+
+
+
+
+
+
+
+    private void CheckInvitationsStatus()
+    {
+        // foreach (var username in alreadyInvited)
+        // {
+        // Prepare the request data
+        LoginData lobbyData = new LoginData(searchInputField.text, "");
+        string jsonData = JsonUtility.ToJson(lobbyData);
+
+        // Send the request to check the invitation status
+        ServerRequestHandler.Instance.SendRequest("/lobby/checkInvitationStatus", jsonData, HandleCheckInvitationsStatus);
+        //  }
+    }
+
+    private void HandleCheckInvitationsStatus(string response)
+    {
+        if (response == "denied")
+        {
+            // Remove from the invitation list
+            alreadyInvited.Remove(searchInputField.text);
+            // Update the status in the scrollbar
+            UpdateUserStatus(searchInputField.text, "Denied Invitation", Color.red);
+        }
+        else if (response == "accepted")
+        {
+            UpdateUserStatus(searchInputField.text, "Accepted Invitation", Color.blue);
+
+            // GO TO MULTI GAME (if you got accept from the invited user)
+        }
+
+
+    }
+    public bool IsUserStatus(string username, string statusToCheck)
+    {
+        // Check if the scrollViewContent has any children
+        if (scrollViewContent.childCount > 0)
+        {
+            // Iterate through all children of the scrollViewContent
+            for (int i = 0; i < scrollViewContent.childCount; i++)
+            {
+                // Get the child GameObject
+                GameObject child = scrollViewContent.GetChild(i).gameObject;
+                // Find the UsernameTxt and StatusTxt within the child GameObject
+                TMP_Text usernameText = child.transform.Find("UsernameTxt").GetComponent<TMP_Text>();
+                TMP_Text statusText = child.transform.Find("StatusTxt").GetComponent<TMP_Text>();
+
+                // Check if the current child is the one with the matching username
+                if (usernameText != null && usernameText.text.Equals(username))
+                {
+                    // Check if the status text is equal to the given statusToCheck
+                    if (statusText != null && statusText.text.Equals(statusToCheck, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true; // The user has the specified status
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No entries in the ScrollView to search through.");
+        }
+
+        return false; // The user was not found or does not have the specified status
+    }
+
+    public void DeleteEntryFromScrollView(string username)
+    {
+        if (scrollViewContent == null) return;
+
+        // Iterate through all children of the scrollViewContent
+        for (int i = 0; i < scrollViewContent.childCount; i++)
+        {
+            GameObject child = scrollViewContent.GetChild(i).gameObject;
+            TMP_Text usernameText = child.transform.Find("UsernameTxt").GetComponent<TMP_Text>();
+
+            // Check if the current child is the one with the matching username
+            if (usernameText != null && usernameText.text.Equals(username))
+            {
+                Destroy(child); // Delete the panel
+                return; // Exit the function as the panel has been found and deleted
+            }
+        }
+
+        Debug.LogWarning($"No entry found for username: {username}");
+    }
+
+
 }

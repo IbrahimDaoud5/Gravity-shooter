@@ -35,10 +35,11 @@ public class Login : MonoBehaviour
         }
         else if (responseText == "Login successful")
         {
-            UImanager.ShowLobbyPanel();
+
             // Save the username in PlayerPrefs
             PlayerPrefs.SetString("Username", usernameInputField.text);
             PlayerPrefs.Save();
+            UImanager.ShowLobbyPanel();
         }
         else
             label.text = responseText;//SHOW IN LABEL

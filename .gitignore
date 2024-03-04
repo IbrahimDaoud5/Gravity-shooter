@@ -81,3 +81,7 @@ Server/target/classes/com/*
 Server/target/maven-status/*
 Client/ProjectSettings/ProjectSettings.asset
 Client/ProjectSettings/EditorBuildSettings.asset
+
+Client/venv/*
+
+

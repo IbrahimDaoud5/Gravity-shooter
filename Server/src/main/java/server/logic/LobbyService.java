@@ -4,6 +4,7 @@ package server.logic;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static server.logic.LoginService.activeUsers;
 import static server.logic.LoginService.printActiveSessions;
@@ -31,7 +32,7 @@ public class LobbyService {
             user.setReady(true);
             return username + "'s status is set to READY";
         } else {
-            return "User " + username + " not found.";
+            return "User " + username + " not found";
         }
     }
 
@@ -49,6 +50,7 @@ public class LobbyService {
         User toUser = activeUsers.get(toUsername);
         if (toUser != null && !toUser.isInGame()) {
             toUser.setInvitedBy(fromUsername);
+            toUser.setIsInvitationAccepted("");
             return "Invitation sent to " + toUsername;
         }
         return "User is not available";
@@ -68,4 +70,29 @@ public class LobbyService {
     }
 
 
+    public String updateInvitationStatus(String fromUsername, String status) {
+        User user = activeUsers.get(fromUsername);
+        if (user != null ) {
+            if(Objects.equals(status, "accepted")) {
+                user.setIsInvitationAccepted("true");
+                return "accepted";
+            }
+            else if (Objects.equals(status, "denied")){
+                user.setIsInvitationAccepted("false");
+                return "denied";
+            }
+        }
+        return "Can't update status";
+    }
+
+    public String checkInvitationStatus(String username) {
+        User user = activeUsers.get(username);
+        if(user!=null) {
+            if (Objects.equals(user.getIsInvitationAccepted(), "true"))
+                return "accepted";
+            else if (Objects.equals(user.getIsInvitationAccepted(), "false"))
+                return "denied";
+        }
+            return "Not answered yet";
+    }
 }
