@@ -4,6 +4,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class BowMulti : NetworkBehaviour
 {
@@ -14,6 +15,7 @@ public class BowMulti : NetworkBehaviour
     public float rotationSpeed = 5f;
 
     private TextMeshProUGUI dataText;
+    [SerializeField] private Camera myCamera;
 
     // Instead of Start
     public override void OnNetworkSpawn()
@@ -56,8 +58,24 @@ public class BowMulti : NetworkBehaviour
     void UpdateRotation()
     {
         Vector2 bowPosition = transform.position;
+        //Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //------
+        /* Vector2 bowPosition = transform.position;
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         direction = mousePosition - bowPosition;
+        transform.right = direction;*/
+        if (myCamera != null)
+        {
+            Vector2 mousePosition = myCamera.ScreenToWorldPoint(Input.mousePosition);
+            direction = mousePosition - bowPosition;
+            transform.right = direction;
+            Debug.Log("mouse position : *** " + direction);
+
+        }
+        else
+        {
+            Debug.LogError("Player camera reference is null. Make sure to assign it in the inspector.");
+        }
 
         if (direction != Vector2.zero)
         {
