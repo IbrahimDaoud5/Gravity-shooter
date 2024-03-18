@@ -88,3 +88,5 @@ Client/venv/*
 Client/ProjectSettings/ProjectSettings.asset
 Client/ProjectSettings/ProjectSettings.asset
 Client/ProjectSettings/QualitySettings.asset
+Client/results/*
+/Client/results

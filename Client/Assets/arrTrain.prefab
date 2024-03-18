@@ -12,11 +12,10 @@ GameObject:
   - component: {fileID: 669204562945335554}
   - component: {fileID: -749796567874916189}
   - component: {fileID: -1199989346545060301}
-  - component: {fileID: -7928996699973601084}
-  - component: {fileID: 5260923692825182009}
+  - component: {fileID: -2439490371020243813}
   m_Layer: 8
-  m_Name: PF Village Props - Arrow
-  m_TagString: Target
+  m_Name: arrTrain
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -179,7 +178,7 @@ PolygonCollider2D:
       - {x: -0.8055629, y: -0.04528928}
       - {x: -0.8003935, y: 0.04723733}
   m_UseDelaunayMesh: 0
---- !u!114 &-7928996699973601084
+--- !u!114 &-2439490371020243813
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -188,18 +187,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 987083297778883385}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cf93b918bdafb44493001adde19ecd4, type: 3}
+  m_Script: {fileID: 11500000, guid: 9da2a55f11fb6e74d9a5233c695c500d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5260923692825182009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 987083297778883385}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1a6d6221c14cdf459e693578853cf82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  agent: {fileID: 0}
