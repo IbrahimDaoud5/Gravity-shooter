@@ -9,6 +9,7 @@ TagManager:
   - DenyButton
   - Wind
   - Bow
+  - Wall
   layers:
   - Default
   - TransparentFX

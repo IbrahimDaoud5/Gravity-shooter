@@ -4,6 +4,7 @@ public class Arrow1 : MonoBehaviour
 {
     Rigidbody2D rb;
     bool hasHit;
+    //public MoveToGoal1 agent;
 
 
     // Start is called before the first frame update
@@ -23,10 +24,37 @@ public class Arrow1 : MonoBehaviour
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+
+        if (collision.gameObject.CompareTag("Target"))
+        {
+            Debug.Log("HIT");
+            //agent.SetReward(15000f); // Reward for hitting the target
+            FindObjectOfType<MoveToGoal1>().SetReward(+1f);
+            FindObjectOfType<MoveToGoal1>().EndEpisode();
+
+
+        }
+        Destroy(gameObject);
+
+
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         hasHit = true;
-        rb.velocity = Vector2.zero;
-        rb.isKinematic = true;
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.isKinematic = true;
+        }
+
+
+        //Debug.Log("*");
+        FindObjectOfType<MoveToGoal1>().SetReward(-0.1f);
+        FindObjectOfType<MoveToGoal1>().EndEpisode();
+        Destroy(gameObject);
+
+
     }
 }
