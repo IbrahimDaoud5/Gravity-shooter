@@ -60,7 +60,7 @@ public class Bow : MonoBehaviour
     }
     private float CalculateHoldDownForce(float holdTime)
     {
-        float maxForceHoldDownTime = 2f;
+        float maxForceHoldDownTime = 0.7f;
         float holdTimeNormalized = Mathf.Clamp01(holdTime / maxForceHoldDownTime);
         float force = holdTimeNormalized * MAX_FORCE;
         return force;

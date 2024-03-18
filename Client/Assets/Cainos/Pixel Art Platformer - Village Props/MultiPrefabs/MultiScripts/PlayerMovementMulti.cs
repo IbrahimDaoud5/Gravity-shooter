@@ -23,15 +23,8 @@ public class PlayerMovementMulti : NetworkBehaviour
 
 
     private enum MovmentState { idle, running, jumping, falling }
-    //here we can cange who writes and who reads its changeable 
-  /*  private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
-       new MyCustomData
-       {
-           _int = 56,
-           _bool = true,   
-       },NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
-  */
-  public override void OnNetworkSpawn()
+
+    public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
@@ -46,7 +39,7 @@ public class PlayerMovementMulti : NetworkBehaviour
     }
     private void Start()
     {
-       
+
         childTransform = transform.Find("bow");
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -54,26 +47,13 @@ public class PlayerMovementMulti : NetworkBehaviour
         coll = GetComponent<BoxCollider2D>();
 
     }
-    
 
-   /* public struct MyCustomData : INetworkSerializable
-    {
-        public int _int;
-        public bool _bool;
-        public FixedString128Bytes message;//must decllare the size of the message 
 
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref _int);
-            serializer.SerializeValue(ref _bool);
-            serializer.SerializeValue(ref message);
-        }
-    }*/
-  
+
     // Update is called once per frame
     private void Update()
     {
-        
+
 
         if (!IsOwner) return;
 

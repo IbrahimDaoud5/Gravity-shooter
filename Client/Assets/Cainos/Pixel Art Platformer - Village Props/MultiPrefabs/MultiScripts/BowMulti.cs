@@ -8,16 +8,23 @@ using Cinemachine;
 
 public class BowMulti : NetworkBehaviour
 {
+    // Reference to the arrow prefab
     public GameObject arrowPrefab;
+    // Force applied when launching the arrow
     public float launchForce;
+    // Transform where the arrow is spawned
     public Transform shotPoint;
+    // Direction from bow to mouse
     Vector2 direction;
+    // Rotation speed of the bow
     public float rotationSpeed = 5f;
 
+    // UI element to display data
     private TextMeshProUGUI dataText;
+    // Reference to the player's camera
     [SerializeField] private Camera myCamera;
 
-    // Instead of Start
+    // Called when the player object is spawned in the network
     public override void OnNetworkSpawn()
     {
         // Find the GameObject with the name "Data" in the scene
@@ -39,6 +46,32 @@ public class BowMulti : NetworkBehaviour
         }
     }
 
+    // Initialize camera distance
+    private float distanceToCamera;
+    private CinemachineBrain cameraBrain;
+
+    private void Start()
+    {
+        // Get the CinemachineBrain from the main camera
+        cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
+        // Add a listener for camera cut events
+        cameraBrain.m_CameraCutEvent.AddListener((brain) =>
+        {
+            if (brain != null)
+            {
+                if (brain.ActiveVirtualCamera != null)
+                {
+                    // if virtual camera changed
+                    distanceToCamera = Vector3.Distance(transform.position, brain.ActiveVirtualCamera.VirtualCameraGameObject.transform.position);
+                    Debug.Log($"on cut event {brain.ActiveVirtualCamera.Name} {distanceToCamera}");
+                }
+            }
+        });
+
+        // Init distance
+        distanceToCamera = Vector3.Distance(transform.position, Camera.main.transform.position);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -55,22 +88,18 @@ public class BowMulti : NetworkBehaviour
         }
     }
 
+    // Update the bow's rotation based on mouse position
     void UpdateRotation()
     {
-        Vector2 bowPosition = transform.position;
-        //Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //------
-        /* Vector2 bowPosition = transform.position;
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        direction = mousePosition - bowPosition;
-        transform.right = direction;*/
         if (myCamera != null)
         {
-            Vector2 mousePosition = myCamera.ScreenToWorldPoint(Input.mousePosition);
-            direction = mousePosition - bowPosition;
+            // Convert mouse position to world point
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToCamera));
+            // Calculate direction from bow to mouse
+            direction = mousePosition - transform.position;
+            // Set bow rotation to face the mouse direction
             transform.right = direction;
-            Debug.Log("mouse position : *** " + direction);
-
+           
         }
         else
         {
@@ -90,6 +119,7 @@ public class BowMulti : NetworkBehaviour
         }
     }
 
+    // Server RPC to update rotation on server
     [ServerRpc]
     void UpdateServerRotationServerRpc(Quaternion targetRotation)
     {
@@ -97,6 +127,7 @@ public class BowMulti : NetworkBehaviour
         UpdateClientRotationClientRpc(targetRotation);
     }
 
+    // Client RPC to update rotation on client
     [ClientRpc]
     void UpdateClientRotationClientRpc(Quaternion targetRotation)
     {
@@ -104,6 +135,7 @@ public class BowMulti : NetworkBehaviour
         transform.rotation = targetRotation;
     }
 
+    // Function to handle shooting logic
     private void Shoot()
     {
         if (IsServer)
@@ -118,6 +150,7 @@ public class BowMulti : NetworkBehaviour
         }
     }
 
+    // Server RPC to handle client request for arrow spawn
     [ServerRpc]
     private void ServerRequestSpawnArrowServerRpc()
     {
@@ -125,6 +158,7 @@ public class BowMulti : NetworkBehaviour
         SpawnArrow();
     }
 
+    // Function to spawn an arrow
     private void SpawnArrow()
     {
         // Convert gravity to local space
@@ -155,8 +189,10 @@ public class BowMulti : NetworkBehaviour
         StartCoroutine(DestroyArrowAfterDelay(newArrow, 2f));
     }
 
+    // Coroutine to destroy arrow after a delay
     IEnumerator DestroyArrowAfterDelay(GameObject arrow, float delay)
     {
+       
         yield return new WaitForSeconds(delay);
         Destroy(arrow);
     }

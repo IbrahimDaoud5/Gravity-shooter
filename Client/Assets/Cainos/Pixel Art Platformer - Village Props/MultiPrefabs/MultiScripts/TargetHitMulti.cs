@@ -1,57 +1,65 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
+using Unity.VisualScripting;
 
 public class TargetHitMulti : NetworkBehaviour
 {
     private static int targets = 0;
-
+    public GameObject targetPrefab;
+    private Collider2D hitCollider;
     private TextMeshProUGUI targetsText;
     private bool hasBeenHit = false;
 
     private void Start()
     {
-        // Find the GameObject with the name "TargetsText" in the scene
-        GameObject targetsTextObject = GameObject.Find("TargetsText");
-
-        if (targetsTextObject != null)
+        if (IsClient) // Only clients need to find and set the UI component
         {
-            // Try to get the Text component from the found GameObject
-            targetsText = targetsTextObject.GetComponent<TextMeshProUGUI>();
-
-            if (targetsText == null)
+            GameObject targetsTextObject = GameObject.Find("TargetsText");
+            if (targetsTextObject != null)
             {
-                Debug.LogError("TargetsText does not have a Text component!");
+                targetsText = targetsTextObject.GetComponent<TextMeshProUGUI>();
+                if (targetsText == null)
+                {
+                    Debug.LogError("TargetsText does not have a Text component!");
+                }
+            }
+            else
+            {
+                Debug.LogError("TargetsText GameObject not found in the scene!");
             }
         }
-        else
+
+        
+    }
+    
+ 
+
+    [ServerRpc(RequireOwnership = false)]
+    void HitTargetServerRpc()
+    {
+        Debug.Log("targets check : " + targets + " hit collidr check :" + hitCollider);
+        if (!hasBeenHit)
         {
-            Debug.LogError("TargetsText GameObject not found in the scene!");
+            hasBeenHit = true;
+            targets++;
+            targetsText.text = "Targets: " + targets;
+            Debug.Log("hit at server rpc :" + targets);
+            StartCoroutine(DestroyAfterDelay(hitCollider.gameObject));
+            // Additional server-side validation and logic here
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!hasBeenHit && collision.gameObject.CompareTag("Target"))
+        
+        hitCollider = collision;
+        if (IsClient && !hasBeenHit && collision.gameObject.CompareTag("Target"))
         {
-            hasBeenHit = true;
-
-            targets++;
-
-            if (targetsText != null)
-            {
-                targetsText.text = "Targets: " + targets;
-                /*adding the 5 shots change gravity feature
-                Vector2 newGravity = new Vector2(0f, 0f);
-                Physics2D.gravity = newGravity;
-                */
-
-            }
-
-            StartCoroutine(DestroyAfterDelay(collision.gameObject));
+            HitTargetServerRpc(); // Tell the server a target has been hit
+            //StartCoroutine(DestroyAfterDelay(collision.gameObject));
+            
         }
     }
 
@@ -59,12 +67,21 @@ public class TargetHitMulti : NetworkBehaviour
     {
         yield return null; // Wait for the next frame
 
-        // Destroy the target and the arrow
-        Destroy(target);
-        Destroy(gameObject);
-    }
-    public static void SetTargets(int value)
-    {
-        targets = value;
+
+        // Needs authority to destroy objects, consider handling this on the server or with proper network object destruction
+        if (IsServer||IsClient)
+        {
+           // Debug.Log("target to destroy : " + target.GetComponent<NetworkObject>());
+           // Debug.Log("Object to destroy : : " + GetComponent<NetworkObject>());
+            if (target.GetComponent<NetworkObject>() != null)
+            {
+                target.GetComponent<NetworkObject>().Despawn();
+            }
+
+            if (GetComponent<NetworkObject>() != null)
+            {
+                GetComponent<NetworkObject>().Despawn();
+            }
+        }
     }
 }
