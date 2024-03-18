@@ -3,6 +3,7 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using Cinemachine;
 
 public class PlayerMovementMulti : NetworkBehaviour
 {
@@ -15,25 +16,37 @@ public class PlayerMovementMulti : NetworkBehaviour
     private SpriteRenderer sprite;
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private float jumpForce = 14f;
+    [SerializeField] private CinemachineVirtualCamera vc;
+    [SerializeField] private AudioListener listener;
 
     [SerializeField] private LayerMask jumpableGround;
 
 
     private enum MovmentState { idle, running, jumping, falling }
     //here we can cange who writes and who reads its changeable 
-    private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
+  /*  private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
        new MyCustomData
        {
            _int = 56,
            _bool = true,   
        },NetworkVariableReadPermission.Everyone,NetworkVariableWritePermission.Owner);
+  */
+  public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            listener.enabled = true;
+            vc.Priority = 1;
+        }
+        else
+        {
+            vc.Priority = 0;
+        }
 
+    }
     private void Start()
     {
-        //serverrbc is better for using strings and sending between client and server etc *****
-        randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>{
-            Debug.Log(OwnerClientId + "; Random Number = " + newValue._int + "status " + newValue._bool + "; " + newValue.message);
-        };
+       
         childTransform = transform.Find("bow");
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -43,7 +56,7 @@ public class PlayerMovementMulti : NetworkBehaviour
     }
     
 
-    public struct MyCustomData : INetworkSerializable
+   /* public struct MyCustomData : INetworkSerializable
     {
         public int _int;
         public bool _bool;
@@ -55,34 +68,14 @@ public class PlayerMovementMulti : NetworkBehaviour
             serializer.SerializeValue(ref _bool);
             serializer.SerializeValue(ref message);
         }
-    }
-    // Start is called before the first frame update
-   /* private void Start()
-    {
-        childTransform = transform.Find("bow");
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        sprite = GetComponent<SpriteRenderer>();
-        coll = GetComponent<BoxCollider2D>();
     }*/
-
+  
     // Update is called once per frame
     private void Update()
     {
         
 
         if (!IsOwner) return;
-        //testingggg
-
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            randomNumber.Value = new MyCustomData
-            {
-                _int = 10,
-                _bool = false,
-                message = "Hello world!"
-            };
-        }
 
         if (PauseMenu.gameIsPaused == false)
         {
@@ -107,6 +100,8 @@ public class PlayerMovementMulti : NetworkBehaviour
         {
             state = MovmentState.running;
             sprite.flipX = false;
+            UpdatePlayerFlipServerRpc(false);
+            UpdatePlayerFlipClientRpc(false);
 
             // Assuming the character is facing right, adjust bow position
             if (childTransform != null)
@@ -120,6 +115,8 @@ public class PlayerMovementMulti : NetworkBehaviour
         {
             state = MovmentState.running;
             sprite.flipX = true;
+            UpdatePlayerFlipServerRpc(true);
+            UpdatePlayerFlipClientRpc(true);
 
             // Assuming the character is facing left, adjust bow position
             if (childTransform != null)
@@ -144,7 +141,20 @@ public class PlayerMovementMulti : NetworkBehaviour
         }
         animator.SetInteger("state", (int)state);
     }
+    [ServerRpc]
+    void UpdatePlayerFlipServerRpc(bool flipValue)
+    {
+        UpdatePlayerFlipClientRpc(flipValue);
+    }
 
+    [ClientRpc]
+    void UpdatePlayerFlipClientRpc(bool flipValue)
+    {
+        if (sprite != null)
+        {
+            sprite.flipX = flipValue;
+        }
+    }
 
     private bool IsGrounded()
     {
