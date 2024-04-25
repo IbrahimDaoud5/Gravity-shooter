@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Target
+  - Arrow
+  - DenyButton
+  - Wind
+  - Bow
+  - Wall
+<<<<<<< Updated upstream
+  - tar
+  - t
+  - ta
+=======
+  - Datatxt
+  - Targettxt
+>>>>>>> Stashed changes
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Ground
+  - Player
+  - Arrow
+  - player1
+  - back
+  - target
+  - Bow
+  - Wind
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: top
+    uniqueID: 4138170871
+    locked: 0

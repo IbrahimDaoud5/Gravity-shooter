@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -44,7 +46,13 @@ public class PauseMenu : MonoBehaviour
         //MUST SEND TO SERVER A REQUEST TO SET STATUS "ISINGAME" = FALSE 
         Time.timeScale = 1f;
         destinationSceneName = "MainScene";
-        LoadSceneAndShowPanel("Lobby");
+        AuthenticationService.Instance.SignOut();
+        if (NetworkManager.Singleton.IsHost)
+        {
+            // Shut down the network session
+            NetworkManager.Singleton.Shutdown();
+        }
+            LoadSceneAndShowPanel("Lobby");
         Resume();//change the flag so when entering again the shooting is not paused 
         TargetHit.SetTargets(0);
 

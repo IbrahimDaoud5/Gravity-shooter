@@ -13,6 +13,8 @@ TagManager:
   - tar
   - t
   - ta
+  - Datatxt
+  - Targettxt
   layers:
   - Default
   - TransparentFX

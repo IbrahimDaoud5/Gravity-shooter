@@ -9,4 +9,10 @@ public class SceneLoader : MonoBehaviour
         //add the player to be in game as its status . send to server 
         SceneManager.LoadScene("FirstLevelScene");
     }
+    // This method can be called to load a new scene
+    public void LoadMultiScene()
+    {
+        //add the player to be in game as its status . send to server 
+        SceneManager.LoadScene("MultiGame");
+    }
 }

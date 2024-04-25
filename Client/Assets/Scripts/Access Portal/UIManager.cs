@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 public class UIManager : MonoBehaviour
 {
 
-    public GameObject LoginPanel, RegisterPanel, LobbyPanel;
+    public GameObject LoginPanel, RegisterPanel, LobbyPanel,TestLobby;
 
     void Start()
     {
@@ -38,6 +38,7 @@ public class UIManager : MonoBehaviour
         ClearInputFields(LobbyPanel);
         LoginPanel.SetActive(false);
         LobbyPanel.SetActive(true);
+        TestLobby.SetActive(true);
     }
 
 

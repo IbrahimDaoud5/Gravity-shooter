@@ -6,6 +6,7 @@ public class ArrowMulti : NetworkBehaviour
     Rigidbody2D rb;
     bool hasHit;
 
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -22,43 +23,10 @@ public class ArrowMulti : NetworkBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponent<NetworkObject>() != null)
-        {
-            ulong networkObjectId = collision.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
-
-            if (IsServer)
-            {
-                ProcessCollision(networkObjectId);
-            }
-            else if (IsClient)
-            {
-                NotifyServerOfCollisionServerRpc(networkObjectId);
-            }
-        }
 
         hasHit = true;
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
     }
 
-    [ServerRpc]
-    private void NotifyServerOfCollisionServerRpc(ulong networkObjectId)
-    {
-        ProcessCollision(networkObjectId);
-    }
-
-    private void ProcessCollision(ulong networkObjectId)
-    {
-        NetworkObject networkObject = NetworkManager.Singleton.SpawnManager.SpawnedObjects[networkObjectId];
-        Debug.Log("I got here to arrow multi ***");
-        if (networkObject != null)
-        {
-            // If the hit object is a target, handle its destruction here.
-            // For example:
-             if (networkObject.CompareTag("Target"))
-             {
-                 networkObject.Despawn();
-             }
-        }
-    }
 }

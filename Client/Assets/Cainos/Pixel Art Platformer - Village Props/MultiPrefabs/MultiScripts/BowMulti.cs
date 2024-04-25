@@ -10,6 +10,7 @@ public class BowMulti : NetworkBehaviour
 {
     // Reference to the arrow prefab
     public GameObject arrowPrefab;
+
     // Force applied when launching the arrow
     public float launchForce;
     // Transform where the arrow is spawned
@@ -23,12 +24,16 @@ public class BowMulti : NetworkBehaviour
     private TextMeshProUGUI dataText;
     // Reference to the player's camera
     [SerializeField] private Camera myCamera;
+    public const float MAX_FORCE = 20f;
+    private SpriteMask forceSpriteMask;
+    [SerializeField] private Transform forceTransform;
+    private float holdDownStartTime;
 
     // Called when the player object is spawned in the network
     public override void OnNetworkSpawn()
     {
         // Find the GameObject with the name "Data" in the scene
-        GameObject targetsTextObject = GameObject.Find("Data");
+        GameObject targetsTextObject = GameObject.FindGameObjectWithTag("Datatxt");
 
         if (targetsTextObject != null)
         {
@@ -44,6 +49,26 @@ public class BowMulti : NetworkBehaviour
         {
             Debug.LogError("data GameObject not found in the scene!");
         }
+    }
+    private void Awake()
+    {
+        forceSpriteMask = forceTransform.Find("mask").GetComponent<SpriteMask>();
+        HideForce();
+    }
+    private void HideForce()
+    {
+        forceSpriteMask.alphaCutoff = 1;
+    }
+    public void ShowForce(float force)
+    {
+        forceSpriteMask.alphaCutoff = 1 - force / MAX_FORCE;
+    }
+    private float CalculateHoldDownForce(float holdTime)
+    {
+        float maxForceHoldDownTime = 0.7f;
+        float holdTimeNormalized = Mathf.Clamp01(holdTime / maxForceHoldDownTime);
+        float force = holdTimeNormalized * MAX_FORCE;
+        return force;
     }
 
     // Initialize camera distance
@@ -83,7 +108,22 @@ public class BowMulti : NetworkBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                Shoot();
+                // Mouse Down, start holding
+                holdDownStartTime = Time.time;
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                // Mouse still down, show force
+                float holdDownTime = Time.time - holdDownStartTime;
+                ShowForce(CalculateHoldDownForce(holdDownTime));
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                // Mouse Up, Launch!
+                float holdDownTime = Time.time - holdDownStartTime;
+                Shoot(CalculateHoldDownForce(holdDownTime));
             }
         }
     }
@@ -99,7 +139,7 @@ public class BowMulti : NetworkBehaviour
             direction = mousePosition - transform.position;
             // Set bow rotation to face the mouse direction
             transform.right = direction;
-           
+
         }
         else
         {
@@ -136,30 +176,33 @@ public class BowMulti : NetworkBehaviour
     }
 
     // Function to handle shooting logic
-    private void Shoot()
+    private void Shoot(float force)
     {
         if (IsServer)
         {
-            // Only the server should spawn the arrow
-            SpawnArrow();
+            // Spawn the arrow with server's authority (will change later to the client's)
+            SpawnArrow(force, NetworkManager.ServerClientId);
         }
         else
         {
             // If this is a client, notify the server to spawn the arrow
-            ServerRequestSpawnArrowServerRpc();
+            ServerRequestSpawnArrowServerRpc(force, NetworkManager.Singleton.LocalClientId);
         }
     }
 
     // Server RPC to handle client request for arrow spawn
+    // Server RPC to handle client request for arrow spawn
     [ServerRpc]
-    private void ServerRequestSpawnArrowServerRpc()
+    private void ServerRequestSpawnArrowServerRpc(float force, ulong clientId)
     {
         // Server receives a request from the client to spawn the arrow
-        SpawnArrow();
+        // Pass along the client's ID so the arrow is spawned with the correct ownership
+        SpawnArrow(force, clientId);
     }
 
+
     // Function to spawn an arrow
-    private void SpawnArrow()
+    private void SpawnArrow(float force, ulong ownerId)
     {
         // Convert gravity to local space
         Vector2 localGravity = transform.InverseTransformDirection(Physics2D.gravity);
@@ -169,30 +212,48 @@ public class BowMulti : NetworkBehaviour
 
         // Instantiate the arrow
         GameObject newArrow = Instantiate(arrowPrefab, shotPoint.position, shotPoint.rotation);
-        Vector2 arrowVelocity = transform.right * launchForce;
+        NetworkObject arrowNetworkObject = newArrow.GetComponent<NetworkObject>();
+        Vector2 arrowVelocity = transform.right * force;
         newArrow.GetComponent<Rigidbody2D>().velocity = arrowVelocity;
 
-        // Spawn the arrow on the network
-        newArrow.GetComponent<NetworkObject>().Spawn(true);
-
-        // Round the values for cleaner output
-        shootingAngle = Mathf.Round(shootingAngle * 100f) / 100f;
-        arrowVelocity = new Vector2(Mathf.Round(arrowVelocity.x * 100f) / 100f, Mathf.Round(arrowVelocity.y * 100f) / 100f);
-        localGravity = new Vector2(Mathf.Round(localGravity.x * 100f) / 100f, Mathf.Round(localGravity.y * 100f) / 100f);
-
+        if (arrowNetworkObject != null)
+        {
+            // Set the owner client ID on the arrow
+            ArrowInfo arrowInfo = newArrow.GetComponent<ArrowInfo>();
+            if (arrowInfo != null)
+            {
+                arrowInfo.SetOwnerClientId(ownerId);
+            }
+            // Spawn the arrow on the network with the client's ownership
+             
+            arrowNetworkObject.SpawnWithOwnership(ownerId);
+        }
         // Calculate the equation with rounded values
-        string equation = $"Data:\nAngle: {shootingAngle}\nVelocity: {arrowVelocity}\nGravity: {Physics2D.gravity}";
+        string equation = $"Data:\nAngle: {Mathf.Round(shootingAngle * 100f) / 100f} degrees\n" +
+                          $"Velocity: {Mathf.Round(arrowVelocity.magnitude * 100f) / 100f} m/s\n" +
+                          $"Gravity: {Mathf.Round(Physics2D.gravity.magnitude * 100f) / 100f} m/s²";
 
-        dataText.text = equation;
-
-        // Destroy the arrow after a delay
+        // Assuming this script is on the player prefab, which has the NetworkObject
+        var player = FindPlayerObject(ownerId);
+        if (player != null)
+        {
+            // Call IncrementTargetHit on that player's UpdateMyUI script
+            player.GetComponent<UpdateMyUI>().UpdateShotDataText(equation);
+        }
         StartCoroutine(DestroyArrowAfterDelay(newArrow, 2f));
     }
-
+    private GameObject FindPlayerObject(ulong clientId)
+    {
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
+        {
+            return networkClient.PlayerObject.gameObject;
+        }
+        return null;
+    }
     // Coroutine to destroy arrow after a delay
     IEnumerator DestroyArrowAfterDelay(GameObject arrow, float delay)
     {
-       
+
         yield return new WaitForSeconds(delay);
         Destroy(arrow);
     }

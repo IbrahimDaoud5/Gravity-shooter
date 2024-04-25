@@ -15,11 +15,12 @@ GameObject:
   - component: {fileID: 6157076452615916490}
   - component: {fileID: -2117403300916587536}
   - component: {fileID: 1407635649619520928}
-  - component: {fileID: 4876476691309278481}
-  - component: {fileID: 1625438634741445539}
+  - component: {fileID: 1163604178035857525}
+  - component: {fileID: 1465636156027545111}
+  - component: {fileID: 1288502781729350157}
   m_Layer: 8
   m_Name: ArrowMulti
-  m_TagString: Target
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -244,7 +245,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4876476691309278481
+--- !u!114 &1163604178035857525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987083297778883385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7b2ca4a3ed0c3c43a10ce5d08a1d219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1465636156027545111
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -256,7 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 877816f97a3a58942a6d3663e3a0e881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1625438634741445539
+--- !u!114 &1288502781729350157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -268,3 +281,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07c4a56748c64004291cdca84dd33c67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetPrefab: {fileID: 2821045334814377445, guid: 852f2e45dae73ae48b376af525457816, type: 3}
+  playerCanvas: {fileID: 5397152125840028580, guid: 7ffd64add46134043aedb8e82910d8bc, type: 3}

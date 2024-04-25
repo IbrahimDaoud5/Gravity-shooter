@@ -116,3 +116,5 @@ Client/Assets/MoveToGoal.onnx.meta
 Client/Assets/MoveToGoal.onnx
 Client/Assets/MoveToGoal.onnx.meta
 Client/config/moveToGoal.yaml
+Client/Assets/Mirror/*
+/Client/Assets/Mirror
