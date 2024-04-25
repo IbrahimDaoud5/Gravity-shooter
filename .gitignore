@@ -90,3 +90,29 @@ Client/ProjectSettings/ProjectSettings.asset
 Client/ProjectSettings/QualitySettings.asset
 Client/results/*
 /Client/results
+Client/Assets/113.onnx
+Client/Assets/113.onnx.meta
+Client/Assets/116.onnx
+Client/Assets/116.onnx.meta
+Client/Assets/145.onnx
+Client/Assets/145.onnx.meta
+Client/Assets/146.onnx
+Client/Assets/146.onnx.meta
+Client/config/moveToGoal2.yaml
+Client/config/moveToGoal1.yaml
+Client/config/moveToGoal.yaml
+Client/config/move.yaml
+Client/config/moveToGoal.yaml
+Client/Assets/MoveToGoal 1.onnx
+Client/Assets/MoveToGoal 1.onnx.meta
+Client/Assets/MoveToGoal 2.onnx
+Client/Assets/MoveToGoal 2.onnx.meta
+Client/Assets/MoveToGoal 3.onnx
+Client/Assets/MoveToGoal 3.onnx.meta
+Client/Assets/MoveToGoal.onnx
+Client/Assets/MoveToGoal.onnx.meta
+Client/Assets/MoveToGoal.onnx
+Client/Assets/MoveToGoal.onnx.meta
+Client/Assets/MoveToGoal.onnx
+Client/Assets/MoveToGoal.onnx.meta
+Client/config/moveToGoal.yaml

@@ -10,6 +10,9 @@ TagManager:
   - Wind
   - Bow
   - Wall
+  - tar
+  - t
+  - ta
   layers:
   - Default
   - TransparentFX

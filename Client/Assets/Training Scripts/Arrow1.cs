@@ -1,60 +1,84 @@
 using UnityEngine;
-
 public class Arrow1 : MonoBehaviour
 {
     Rigidbody2D rb;
     bool hasHit;
-    //public MoveToGoal1 agent;
+    public MoveToGoal1 agent;  // The ML agent
+    private float actualAngle;
+    private float actualForce;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (hasHit == false)
+        if (!hasHit)
         {
             float angle = Mathf.Atan2(rb.velocity.y, rb.velocity.x) * Mathf.Rad2Deg;
-            //Debug.Log("Arrow Rotation Angle: " + angle);
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
+    }
+
+    public void SetInitialValues(float angle, float force)
+    {
+        actualAngle = angle;
+        actualForce = force;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
         if (collision.gameObject.CompareTag("Target"))
         {
+            Destroy(gameObject);
             Debug.Log("HIT");
-            //agent.SetReward(15000f); // Reward for hitting the target
-            FindObjectOfType<MoveToGoal1>().SetReward(+1f);
-            FindObjectOfType<MoveToGoal1>().EndEpisode();
-
 
         }
-        Destroy(gameObject);
-
-
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        hasHit = true;
         if (rb != null)
         {
             rb.velocity = Vector2.zero;
             rb.isKinematic = true;
         }
-
-
-        //Debug.Log("*");
-        FindObjectOfType<MoveToGoal1>().SetReward(-0.1f);
-        FindObjectOfType<MoveToGoal1>().EndEpisode();
+        if (!collision.gameObject.CompareTag("Target"))
+        {
+            ProvideFeedback();
+        }
         Destroy(gameObject);
+    }
 
+    private void ProvideFeedback()
+    {
+        string msg = "";
+        int modelAngle = agent.GetAngle();
+        int modelForce = agent.GetForce();
 
+        Debug.Log("actual angle" + actualAngle + " , Force= " + actualForce);
+        Debug.Log("model angle" + modelAngle + " , Force= " + modelForce);
+
+        // Check angle feedback
+        if (actualAngle < modelAngle)
+        {
+            msg = "Aim HIGHER";
+        }
+        else if (actualAngle > modelAngle)
+        {
+            msg = "Aim LOWER";
+        }
+
+        // Check force feedback
+        if (actualForce < modelForce)
+        {
+            msg += msg.Length > 0 ? " & Increase FORCE" : "Increase FORCE";
+        }
+        else if (actualForce > modelForce)
+        {
+            msg += msg.Length > 0 ? " & Decrease FORCE" : "Decrease FORCE";
+        }
+
+        Debug.Log(msg);
     }
 }
