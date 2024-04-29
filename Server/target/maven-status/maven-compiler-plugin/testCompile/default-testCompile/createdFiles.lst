@@ -2,3 +2,4 @@ server\logic\RegisterControllerTest.class
 server\logic\RegisterServiceTest$2.class
 server\logic\RegisterServiceTest.class
 server\logic\RegisterServiceTest$1.class
+server\logic\LoginServiceTest.class

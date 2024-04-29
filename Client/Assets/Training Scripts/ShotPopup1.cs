@@ -13,7 +13,7 @@ public class ShotPopup1 : MonoBehaviour
 
         return shotPopup;
     }
-    private const float DISAPPEAR_TIMER_MAX = 2f;
+    private const float DISAPPEAR_TIMER_MAX = 8f;
     private TextMeshPro textMesh;
     private float disappearTimer;
     private Color textColor;

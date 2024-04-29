@@ -15,4 +15,9 @@ public class SceneLoader : MonoBehaviour
         //add the player to be in game as its status . send to server 
         SceneManager.LoadScene("MultiGame");
     }
+    public void LoadTrainingScene()
+    {
+        //add the player to be in game as its status . send to server 
+        SceneManager.LoadScene("TrainingScene");
+    }
 }

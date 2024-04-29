@@ -1,11 +1,10 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviour
 {
 
-    public GameObject LoginPanel, RegisterPanel, LobbyPanel,TestLobby;
+    public GameObject LoginPanel, RegisterPanel, LobbyPanel, TestLobby;
 
     void Start()
     {

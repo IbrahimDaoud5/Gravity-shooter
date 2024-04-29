@@ -20,7 +20,27 @@ public class Bow1 : MonoBehaviour
     //private float angle, force;
 
 
+    private void Start()
+    {
+        // Find the GameObject with the name "Data" in the scene
+        GameObject targetsTextObject = GameObject.Find("Data");
 
+        if (targetsTextObject != null)
+        {
+            // Try to get the Text component from the found GameObject
+            dataText = targetsTextObject.GetComponent<TextMeshProUGUI>(); ;
+
+            if (dataText == null)
+            {
+                Debug.LogError("data does not have a Text component!");
+            }
+        }
+        else
+        {
+            Debug.LogError("data GameObject not found in the scene!");
+        }
+
+    }
 
     private void Awake()
     {
@@ -104,7 +124,15 @@ public class Bow1 : MonoBehaviour
             arrowScript.agent = FindObjectOfType<MoveToGoal1>();  // Assign the agent to the arrow
         }
 
+        // Round the values for cleaner output
+        shootingAngle = Mathf.Round(shootingAngle * 100f) / 100f;
+        arrowVelocity = new Vector2(Mathf.Round(arrowVelocity.x * 100f) / 100f, Mathf.Round(arrowVelocity.y * 100f) / 100f);
+        localGravity = new Vector2(Mathf.Round(localGravity.x * 100f) / 100f, Mathf.Round(localGravity.y * 100f) / 100f);
 
+        // Calculate the equation with rounded values
+        string equation = $"Angle: {shootingAngle}\nForce: {arrowVelocity.magnitude}";
+
+        dataText.text = equation;
 
         // Destroy the arrow after a delay
         // StartCoroutine(DestroyArrowAfterDelay(newArrow, 0.3f));
@@ -123,13 +151,5 @@ public class Bow1 : MonoBehaviour
 
 
 
-    //public float GetAngle()
-    //{
-    //    return angle;
-    //}
 
-    //public float GetForce()
-    //{
-    //    return force;
-    //}
 }

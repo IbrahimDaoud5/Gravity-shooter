@@ -6,6 +6,7 @@ public class Arrow1 : MonoBehaviour
     public MoveToGoal1 agent;  // The ML agent
     private float actualAngle;
     private float actualForce;
+    public PopupController popupController;
 
     void Start()
     {
@@ -33,6 +34,7 @@ public class Arrow1 : MonoBehaviour
         {
             Destroy(gameObject);
             Debug.Log("HIT");
+            agent.GenerateRandomPositionInHalves();
 
         }
     }
@@ -56,17 +58,17 @@ public class Arrow1 : MonoBehaviour
         int modelAngle = agent.GetAngle();
         int modelForce = agent.GetForce();
 
-        Debug.Log("actual angle" + actualAngle + " , Force= " + actualForce);
-        Debug.Log("model angle" + modelAngle + " , Force= " + modelForce);
+        Debug.Log("actual angle = " + actualAngle + " , Force = " + actualForce);
+        Debug.Log("model angle = " + modelAngle + " , Force = " + modelForce);
 
         // Check angle feedback
         if (actualAngle < modelAngle)
         {
-            msg = "Aim HIGHER";
+            msg = "Increase ANGLE";
         }
         else if (actualAngle > modelAngle)
         {
-            msg = "Aim LOWER";
+            msg = "Decrease ANGLE";
         }
 
         // Check force feedback
@@ -80,5 +82,14 @@ public class Arrow1 : MonoBehaviour
         }
 
         Debug.Log(msg);
+        //popupController.ShowPopup(msg, 3.0f);
+        ShotPopup.Create(new Vector3(2, -1, 0), msg);
     }
+
+
+
+
+
+
+
 }

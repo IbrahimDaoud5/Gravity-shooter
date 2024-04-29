@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: server.logic.RegisterServiceTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.763 s - in server.logic.RegisterServiceTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s - in server.logic.RegisterServiceTest
