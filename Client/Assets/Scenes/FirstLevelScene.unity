@@ -7670,7 +7670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 459412461}
-  remainingTime: 10
+  remainingTime: 600
   pauseMenu: {fileID: 1292525700}
 --- !u!1001 &1299524932
 PrefabInstance:
