@@ -120,8 +120,10 @@ public class Bow : MonoBehaviour
         localGravity = new Vector2(Mathf.Round(localGravity.x * 100f) / 100f, Mathf.Round(localGravity.y * 100f) / 100f);
 
         // Calculate the equation with rounded values
-        string equation = $"Data:\nAngle: {shootingAngle}\nVelocity: {arrowVelocity}\nGravity: {Physics2D.gravity}";
-
+        //string equation = $"Data:\nAngle: {shootingAngle}\nVelocity: {arrowVelocity}\nGravity: {Physics2D.gravity}";
+        string equation = $"Data:\nAngle: {Mathf.Round(shootingAngle * 100f) / 100f} degrees\n" +
+                                 $"Velocity: {Mathf.Round(arrowVelocity.magnitude * 100f) / 100f} m/s\n" +
+                                 $"Gravity: {Mathf.Round(Physics2D.gravity.magnitude * 100f) / 100f} m/s²";
         dataText.text = equation;
         // Create a ShotPopup with the calculated equation
         //ShotPopup.Create(UtilsClass.GetMouseWorldPosition(), equation);

@@ -2,6 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using TMPro;
 using Unity.Collections;
+using Unity.VisualScripting;
 
 public class UpdateMyUI : NetworkBehaviour
 {
@@ -9,8 +10,19 @@ public class UpdateMyUI : NetworkBehaviour
     private TextMeshProUGUI DataText;
     private NetworkVariable<int> targetsHit = new NetworkVariable<int>();
     private NetworkVariable<FixedString128Bytes> data = new NetworkVariable<FixedString128Bytes>();
+    private GameObject parentObject;
+
+    public GameObject popupPanel;
 
     private void Start()
+    {
+
+
+        // Subscribe to the targetsHit value changed event to update the UI
+        targetsHit.OnValueChanged += HandleTargetsValueChanged;
+        data.OnValueChanged += HandleDataValueChanged;
+    }
+    public override void OnNetworkSpawn()
     {
         // Assign the TextMeshProUGUI component from the Canvas
         targetsText = GameObject.FindGameObjectWithTag("Targettxt").GetComponent<TextMeshProUGUI>();
@@ -19,17 +31,21 @@ public class UpdateMyUI : NetworkBehaviour
             Debug.LogError("The Targettxt tag is not assigned to any TextMeshProUGUI components in this object's children.");
             return;
         }
+        parentObject = GameObject.FindGameObjectWithTag("MultiCanvas");
+        popupPanel = parentObject.transform.Find("PopupPanel").gameObject;
+        if (popupPanel == null)
+        {
+            Debug.LogError("The popupPanel tag is not assigned to any object's children.");
+            return;
+        }
         DataText = GameObject.FindGameObjectWithTag("Datatxt").GetComponent<TextMeshProUGUI>();
         if (DataText == null)
         {
             Debug.LogError("The Targettxt tag is not assigned to any TextMeshProUGUI components in this object's children.");
             return;
         }
-
-        // Subscribe to the targetsHit value changed event to update the UI
-        targetsHit.OnValueChanged += HandleTargetsValueChanged;
-        data.OnValueChanged += HandleDataValueChanged;
     }
+
     private void HandleDataValueChanged(FixedString128Bytes oldValue, FixedString128Bytes newValue)
     {
         // Only the owner should update their own UI
@@ -45,7 +61,25 @@ public class UpdateMyUI : NetworkBehaviour
         {
             targetsText.text = "Targets: " + newValue;
         }
+        if (newValue == 1 && IsOwner)
+        {
+            DisplayPopup();
+        }
     }
+
+    private void DisplayPopup()
+    {
+        if (popupPanel != null)
+        {
+            
+            popupPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Popup panel is not assigned!");
+        }
+    }
+
 
     // Call this method when the player hits a target
     public void IncrementTargetHit()

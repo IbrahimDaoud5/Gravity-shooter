@@ -45,7 +45,7 @@ public class GameLobbyController : NetworkBehaviour
     private Lobby joinedLobby;
 
 
-    private async void Start()
+    private void Start()
     {
         targetPositions = spawnPosition.savedPositions;
         lobbyPanel.SetActive(true);
@@ -381,13 +381,13 @@ public class GameLobbyController : NetworkBehaviour
         }
     }
 
-    private void OnDestroy()
+   /* private void OnDestroy()
     {
         if (requestThrottler != null)
         {
             StopCoroutine(requestThrottler);
         }
-    }
+    }*/
 
 
 

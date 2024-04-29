@@ -5,14 +5,13 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
+using Unity.VisualScripting;
 
 public class BowMulti : NetworkBehaviour
 {
     // Reference to the arrow prefab
     public GameObject arrowPrefab;
 
-    // Force applied when launching the arrow
-    public float launchForce;
     // Transform where the arrow is spawned
     public Transform shotPoint;
     // Direction from bow to mouse
@@ -24,16 +23,22 @@ public class BowMulti : NetworkBehaviour
     private TextMeshProUGUI dataText;
     // Reference to the player's camera
     [SerializeField] private Camera myCamera;
-    public const float MAX_FORCE = 20f;
+    private float MAX_FORCE = 20F;
+    
     private SpriteMask forceSpriteMask;
     [SerializeField] private Transform forceTransform;
     private float holdDownStartTime;
 
+    public GameObject popupPanel;
+    private GameObject parentObject;
+
     // Called when the player object is spawned in the network
     public override void OnNetworkSpawn()
     {
+
         // Find the GameObject with the name "Data" in the scene
         GameObject targetsTextObject = GameObject.FindGameObjectWithTag("Datatxt");
+        parentObject = GameObject.FindGameObjectWithTag("MultiCanvas");
 
         if (targetsTextObject != null)
         {
@@ -50,10 +55,53 @@ public class BowMulti : NetworkBehaviour
             Debug.LogError("data GameObject not found in the scene!");
         }
     }
+
+    public void OnButtonForceClicked()
+    {
+        ChangeFroce();
+    }
+    
+    
+    public void OnButtonGravityClicked()
+    {
+        ChangeGravityServerRpc(NetworkManager.Singleton.LocalClientId);
+    }
+
+    private void ChangeFroce()
+    {
+
+            MAX_FORCE= 50f;
+            popupPanel.SetActive(false);
+    }
+
+
+
+    // Server RPC that is called by the client
+    [ServerRpc(RequireOwnership = false)]
+    private void ChangeGravityServerRpc(ulong requesterClientId)
+    {
+        ChangeGravityClientRpc(requesterClientId, -20f);
+    }
+
+    // Client RPC that is executed on all clients
+    [ClientRpc]
+    private void ChangeGravityClientRpc(ulong requesterClientId, float newGravityY)
+    {
+        // Check if the executing client is the one who requested the change
+        if (NetworkManager.Singleton.LocalClientId != requesterClientId)
+        {
+            Physics2D.gravity = new Vector2(Physics2D.gravity.x, newGravityY);
+        }
+        popupPanel.SetActive(false);
+    }
+
+
+
     private void Awake()
     {
         forceSpriteMask = forceTransform.Find("mask").GetComponent<SpriteMask>();
         HideForce();
+
     }
     private void HideForce()
     {
@@ -77,6 +125,33 @@ public class BowMulti : NetworkBehaviour
 
     private void Start()
     {
+        popupPanel = parentObject.transform.Find("PopupPanel").gameObject;
+        if (popupPanel != null)
+        {
+            // Find the button as a child of the panel by name and add a listener
+            Button buttonForce = popupPanel.transform.Find("Force").GetComponent<Button>();
+            if (buttonForce != null)
+            {
+                buttonForce.onClick.AddListener(OnButtonForceClicked);
+            }
+            else
+            {
+                Debug.LogError("Button not found in panel!");
+            }
+            Button buttonGravity = popupPanel.transform.Find("Gravity").GetComponent<Button>();
+            if (buttonGravity != null)
+            {
+                buttonGravity.onClick.AddListener(OnButtonGravityClicked);
+            }
+            else
+            {
+                Debug.LogError("Button not found in panel!");
+            }
+        }
+        else
+        {
+            Debug.LogError("Panel not assigned!");
+        }
         // Get the CinemachineBrain from the main camera
         cameraBrain = Camera.main.GetComponent<CinemachineBrain>();
         // Add a listener for camera cut events
@@ -231,7 +306,7 @@ public class BowMulti : NetworkBehaviour
         // Calculate the equation with rounded values
         string equation = $"Data:\nAngle: {Mathf.Round(shootingAngle * 100f) / 100f} degrees\n" +
                           $"Velocity: {Mathf.Round(arrowVelocity.magnitude * 100f) / 100f} m/s\n" +
-                          $"Gravity: {Mathf.Round(Physics2D.gravity.magnitude * 100f) / 100f} m/s²";
+                          $"Gravity: {Mathf.Round(Physics2D.gravity.y * 100f) / 100f} m/s²";
 
         // Assuming this script is on the player prefab, which has the NetworkObject
         var player = FindPlayerObject(ownerId);
@@ -250,6 +325,7 @@ public class BowMulti : NetworkBehaviour
         }
         return null;
     }
+
     // Coroutine to destroy arrow after a delay
     IEnumerator DestroyArrowAfterDelay(GameObject arrow, float delay)
     {

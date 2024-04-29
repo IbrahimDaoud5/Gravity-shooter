@@ -10,16 +10,19 @@ public class TargetHit : MonoBehaviour
 
     private TextMeshProUGUI targetsText;
     private bool hasBeenHit = false;
+    public PauseMenu pauseMenu;
 
     private void Start()
     {
         // Find the GameObject with the name "TargetsText" in the scene
         GameObject targetsTextObject = GameObject.Find("TargetsText");
+        GameObject canvas = GameObject.Find("Canvas");
 
         if (targetsTextObject != null)
         {
             // Try to get the Text component from the found GameObject
             targetsText = targetsTextObject.GetComponent<TextMeshProUGUI>();
+            pauseMenu = canvas.GetComponent<PauseMenu>();
 
             if (targetsText == null)
             {
@@ -29,6 +32,14 @@ public class TargetHit : MonoBehaviour
         else
         {
             Debug.LogError("TargetsText GameObject not found in the scene!");
+        }
+    }
+
+    private void Update()
+    {
+        if (targets >= 15)
+        {
+            pauseMenu.LoadMenu();
         }
     }
 
@@ -42,7 +53,7 @@ public class TargetHit : MonoBehaviour
 
             if (targetsText != null)
             {
-                targetsText.text = "Targets: " + targets;
+                targetsText.text = "Targets: " + targets + "/15";
                 /*adding the 5 shots change gravity feature
                 Vector2 newGravity = new Vector2(0f, 0f);
                 Physics2D.gravity = newGravity;

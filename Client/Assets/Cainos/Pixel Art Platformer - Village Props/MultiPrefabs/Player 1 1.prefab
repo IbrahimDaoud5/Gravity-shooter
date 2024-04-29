@@ -700,6 +700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69e2be46aa967b45ac877bd3c2b3259, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  popupPanel: {fileID: 0}
 --- !u!1 &8121980217337380155
 GameObject:
   m_ObjectHideFlags: 0
@@ -934,11 +935,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arrowPrefab: {fileID: 987083297778883385, guid: d8c24b13583932444bf25267fbf7afb1, type: 3}
-  launchForce: 13
   shotPoint: {fileID: 2386157027640173800}
   rotationSpeed: 5
   myCamera: {fileID: 2319069228172531376}
+  MAX_FORCE:
+    m_InternalValue: 0
   forceTransform: {fileID: 5444931749661523921}
+  popupPanel: {fileID: 0}
 --- !u!114 &931492520014684351
 MonoBehaviour:
   m_ObjectHideFlags: 0
