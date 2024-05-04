@@ -11,7 +11,7 @@ public class ObjectDetector : MonoBehaviour
 
     private void Start()
     {
-       
+
         windArrow.SetActive(false);
         areaEffectorCollider = GetComponent<Collider2D>(); // Cache AreaEffector2D collider
 
@@ -30,9 +30,9 @@ public class ObjectDetector : MonoBehaviour
 
     void Awake()
     {
-        
-        windArrow = GameObject.Find("WindArrow");      
-       // Debug.Log(windArrow);
+
+        windArrow = GameObject.Find("WindArrow");
+        // Debug.Log(windArrow);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -41,7 +41,7 @@ public class ObjectDetector : MonoBehaviour
         {
             bowObjectInside = true;
             windArrow.SetActive(true);
-           // Debug.Log("Bow entered the AreaEffector2D!");
+            // Debug.Log("Bow entered the AreaEffector2D!");
         }
     }
 
@@ -63,14 +63,14 @@ public class ObjectDetector : MonoBehaviour
     }
 
 
-    
+
     private void Update()
     {
         if (bowObjectInside)
         {
             MoveWindArrow();
-       
-           // Debug.Log("Bow is currently inside the AreaEffector2D!");
+
+            // Debug.Log("Bow is currently inside the AreaEffector2D!");
         }
     }
     void MoveWindArrow()
@@ -79,14 +79,14 @@ public class ObjectDetector : MonoBehaviour
         {
             // Get the direction from the force applied by the AreaEffector2D
             float effectorForce = areaEffector.forceAngle;
-           // Debug.Log(effectorForce);
+            // Debug.Log(effectorForce);
 
             // Calculate the angle based on the direction vector
             float rotationAngle = effectorForce;
 
 
             // Rotate the wind arrow based on the calculated angle
-            windArrowRectTransform.rotation = Quaternion.Euler(0, 0, rotationAngle-90);
+            windArrowRectTransform.rotation = Quaternion.Euler(0, 0, rotationAngle - 90);
         }
     }
 

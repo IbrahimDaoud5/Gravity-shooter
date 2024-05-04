@@ -1,23 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using Unity.Services.Authentication;
-using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
-using Unity.Services.Relay.Models;
 using Unity.Services.Relay;
-using Unity.VisualScripting;
+using Unity.Services.Relay.Models;
 using UnityEngine;
-using UnityEngine.Profiling;
-using UnityEngine.UI;
-using UnityEditor;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameLobbyController : NetworkBehaviour
 {
@@ -50,12 +44,12 @@ public class GameLobbyController : NetworkBehaviour
         targetPositions = spawnPosition.savedPositions;
         lobbyPanel.SetActive(true);
         lobbiesPanel.SetActive(false);
-       /* await UnityServices.InitializeAsync();
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();*/
+        /* await UnityServices.InitializeAsync();
+         AuthenticationService.Instance.SignedIn += () =>
+         {
+             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
+         };
+         await AuthenticationService.Instance.SignInAnonymouslyAsync();*/
 
         createLobbyBtn.onClick.AddListener(async () => await CreateLobby());
         lobbiesListBtn.onClick.AddListener(async () => await ListLobbies());
@@ -160,7 +154,7 @@ public class GameLobbyController : NetworkBehaviour
 
             // Retrieve the relay join code from lobby custom data
             string relayCode = lobby.Data["RelayJoinCode"].Value;
-           
+
 
             StartHeartbeatTimer();
             printPlayers(lobby);
@@ -303,6 +297,12 @@ public class GameLobbyController : NetworkBehaviour
 
     public void exitLobbies()
     {
+        AuthenticationService.Instance.SignOut();
+        if (NetworkManager.Singleton.IsHost)
+        {
+            // Shut down the network session
+            NetworkManager.Singleton.Shutdown();
+        }
         lobbyPanel.SetActive(true);
         lobbiesPanel.SetActive(false);
     }
@@ -364,7 +364,8 @@ public class GameLobbyController : NetworkBehaviour
         {
             StopCoroutine(requestThrottler);
         }
-        requestThrottler = StartCoroutine(ThrottleRequests(() => {
+        requestThrottler = StartCoroutine(ThrottleRequests(() =>
+        {
             if (hostLobby != null)
             {
                 LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id).WrapErrors();
@@ -381,13 +382,13 @@ public class GameLobbyController : NetworkBehaviour
         }
     }
 
-   /* private void OnDestroy()
-    {
-        if (requestThrottler != null)
-        {
-            StopCoroutine(requestThrottler);
-        }
-    }*/
+    /* private void OnDestroy()
+     {
+         if (requestThrottler != null)
+         {
+             StopCoroutine(requestThrottler);
+         }
+     }*/
 
 
 
@@ -422,7 +423,7 @@ public class GameLobbyController : NetworkBehaviour
                 allocation.Key,
                 allocation.ConnectionData
             );
-            
+
             NetworkManager.Singleton.StartHost();
             SpawnAllTargets();
         }
@@ -482,7 +483,7 @@ public class GameLobbyController : NetworkBehaviour
 
     private void StartGameAsHost()
     {
-       
+
         var message = new FastBufferWriter(16, Unity.Collections.Allocator.Temp);
         message.WriteValueSafe(relayJoinCode.Value);
         NetworkManager.Singleton.SceneManager.LoadScene("MultiGame", UnityEngine.SceneManagement.LoadSceneMode.Single);

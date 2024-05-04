@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using Unity.Services.Authentication;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    public static bool gameIsPaused=false;
+    public static bool gameIsPaused = false;
     public GameObject pauseMenuUI;
     public UIManager UImanager;
     public string destinationSceneName;
@@ -39,7 +35,7 @@ public class PauseMenu : MonoBehaviour
     {
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
-        gameIsPaused = true;    
+        gameIsPaused = true;
     }
     public void LoadMenu()
     {
@@ -52,7 +48,7 @@ public class PauseMenu : MonoBehaviour
             // Shut down the network session
             NetworkManager.Singleton.Shutdown();
         }
-            LoadSceneAndShowPanel("Lobby");
+        LoadSceneAndShowPanel("Lobby");
         Resume();//change the flag so when entering again the shooting is not paused 
         TargetHit.SetTargets(0);
 

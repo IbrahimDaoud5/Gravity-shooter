@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public class Arrow1 : MonoBehaviour
 {
@@ -58,33 +59,83 @@ public class Arrow1 : MonoBehaviour
         int modelAngle = agent.GetAngle();
         int modelForce = agent.GetForce();
 
+        int maxAngle = 360; // Maximum possible angle
+        int maxForce = 20;  // Maximum possible force
+
+
+        double angleDifferencePercent = Math.Abs((double)(actualAngle - modelAngle) / maxAngle) * 100;
+        double forceDifferencePercent = Math.Abs((double)(actualForce - modelForce) / maxForce) * 100;
+
+        // Apply weights
+        double weightedAngleDifference = angleDifferencePercent * 0.7;
+        double weightedForceDifference = forceDifferencePercent * 0.3;
+
         Debug.Log("actual angle = " + actualAngle + " , Force = " + actualForce);
         Debug.Log("model angle = " + modelAngle + " , Force = " + modelForce);
 
-        // Check angle feedback
-        if (actualAngle < modelAngle)
-        {
-            msg = "Increase ANGLE";
-        }
-        else if (actualAngle > modelAngle)
-        {
-            msg = "Decrease ANGLE";
-        }
+        // Define thresholds for small, moderate, and large differences
+        double smallThreshold = 20;
+        double moderateThreshold = 35;
 
-        // Check force feedback
-        if (actualForce < modelForce)
+
+        if (weightedAngleDifference > weightedForceDifference)
         {
-            msg += msg.Length > 0 ? " & Increase FORCE" : "Increase FORCE";
+            if (actualAngle < modelAngle)
+            {
+                if (angleDifferencePercent > moderateThreshold)
+                    msg = "Significantly increase ANGLE";
+                else if (angleDifferencePercent > smallThreshold)
+                    msg = "Moderately increase ANGLE";
+                else
+                    msg = "Slightly increase ANGLE";
+            }
+            else if (actualAngle > modelAngle)
+            {
+                if (angleDifferencePercent > moderateThreshold)
+                    msg = "Significantly decrease ANGLE";
+                else if (angleDifferencePercent > smallThreshold)
+                    msg = "Moderately decrease ANGLE";
+                else
+                    msg = "Slightly decrease ANGLE";
+            }
         }
-        else if (actualForce > modelForce)
+        else if (weightedForceDifference > weightedAngleDifference)
         {
-            msg += msg.Length > 0 ? " & Decrease FORCE" : "Decrease FORCE";
+            if (actualForce < modelForce)
+            {
+                if (forceDifferencePercent > moderateThreshold)
+                    msg = "Significantly increase FORCE";
+                else if (forceDifferencePercent > smallThreshold)
+                    msg = "Moderately increase FORCE";
+                else
+                    msg = "Slightly increase FORCE";
+            }
+            else if (actualForce > modelForce)
+            {
+                if (forceDifferencePercent > moderateThreshold)
+                    msg = "Significantly decrease FORCE";
+                else if (forceDifferencePercent > smallThreshold)
+                    msg = "Moderately decrease FORCE";
+                else
+                    msg = "Slightly decrease FORCE";
+            }
+        }
+        else
+        {
+            if (actualAngle != modelAngle)
+            {
+                msg = actualAngle < modelAngle ? "Adjust ANGLE: Increase" : "Adjust ANGLE: Decrease";
+            }
+            else if (actualForce != modelForce)
+            {
+                msg = actualForce < modelForce ? "Adjust FORCE: Increase" : "Adjust FORCE: Decrease";
+            }
         }
 
         Debug.Log(msg);
-        //popupController.ShowPopup(msg, 3.0f);
         ShotPopup.Create(new Vector3(2, -1, 0), msg);
     }
+
 
 
 

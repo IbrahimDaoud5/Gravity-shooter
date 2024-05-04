@@ -1,8 +1,7 @@
-using Unity.Netcode;
-using UnityEngine;
 using TMPro;
 using Unity.Collections;
-using Unity.VisualScripting;
+using Unity.Netcode;
+using UnityEngine;
 
 public class UpdateMyUI : NetworkBehaviour
 {
@@ -61,7 +60,7 @@ public class UpdateMyUI : NetworkBehaviour
         {
             targetsText.text = "Targets: " + newValue;
         }
-        if (newValue == 1 && IsOwner)
+        if (newValue == 5 && IsOwner)
         {
             DisplayPopup();
         }
@@ -71,7 +70,7 @@ public class UpdateMyUI : NetworkBehaviour
     {
         if (popupPanel != null)
         {
-            
+
             popupPanel.SetActive(true);
         }
         else
@@ -107,7 +106,7 @@ public class UpdateMyUI : NetworkBehaviour
         }
     }
 
-    
+
     [ServerRpc]
     public void UpdateShotDataServerRpc(string shotData)
     {
